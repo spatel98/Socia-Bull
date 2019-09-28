@@ -1,23 +1,32 @@
 {
-  "name": "RNFirebaseStarter",
+  "name": "SociaBull",
   "version": "5.4.0",
   "private": true,
   "scripts": {
     "android-bundle": "ORG_GRADLE_PROJECT_bundleInDev=true npm run android",
-    "android": "react-native run-android",
+    "android": "cd .\\android && .\\gradlew.bat clean && cd .. && react-native run-android",
     "ios": "react-native run-ios --simulator=\"iPhone X\"",
     "apk": "cd android && ./gradlew assembleRelease",
     "rename": "node ./bin/rename.js",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "postinstall": "npx jetify"
+    "postinstall": "npx jetify",
+    "emulator": "cd ..\\..\\..\\Android\\android-sdk\\emulator && emulator -avd Pixel_3a_API_29",
+    "emulator1": "",
+    "emulator2": ""
+    
   },
   "dependencies": {
     "jetifier": "^1.6.4",
+    "prop-types": "^15.7.2",
     "react": "16.8.6",
     "react-native": "0.60.5",
-    "react-native-firebase": "^5.5.6"
+    "react-native-firebase": "^5.5.6",
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-keyboard-aware-scroll-view": "^0.9.1",
+    "react-navigation": "^4.0.10",
+    "react-navigation-stack": "^1.9.1"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
