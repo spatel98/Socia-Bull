@@ -13,9 +13,8 @@
     "lint": "eslint .",
     "postinstall": "npx jetify",
     "emulator": "cd ..\\..\\..\\Android\\android-sdk\\emulator && emulator -avd Pixel_3a_API_29",
-    "emulator1": "",
+    "emulator1": "cd C:\\Users\\zscha\\AppData\\Local\\Android\\Sdk\\emulator && emulator -avd Pixel_3a_API_28",
     "emulator2": ""
-    
   },
   "dependencies": {
     "jetifier": "^1.6.4",
