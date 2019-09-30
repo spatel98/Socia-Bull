@@ -4,7 +4,6 @@ import Dimensions from 'Dimensions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   StyleSheet,
-  Text,
   View,
   Image,
   ImageBackground,
@@ -12,15 +11,14 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
+import navBar from '../../assets/images/navigation-bar-message.png';
+const DEVICE_WIDTH = Dimensions.get('window').width;
 
-import logoImg from '../../assets/images/logo.png';
-
-export default class Logo extends React.Component {
+export default class NavChats extends React.Component {
     render() {
       return (
         <View style={styles.container}>
-          <Image source={logoImg} style={styles.image} />
-          <Text style={styles.text}>SOCI-A-BULL</Text>
+          <Image source={navBar} style={styles.image} />
         </View>
       );
     }
@@ -28,13 +26,13 @@ export default class Logo extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-    	flex: 3,
+    	flex: 0,
     	alignItems: 'center',
     	justifyContent: 'center',
     },
     image: {
-    	width: 80,
-    	height: 80,
+    	width: DEVICE_WIDTH,
+    	height: (DEVICE_WIDTH/300)*30,
     },
     text: {
     	color: 'white',
