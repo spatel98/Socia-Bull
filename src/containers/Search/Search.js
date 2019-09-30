@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import NavigationHome from './NavHome'
+import NavigationSearch from './NavSearch'
 
-export default class Home extends React.Component {
+export default class Search extends React.Component {
   render(){
     return(
       <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
-          <NavigationHome />
+          <NavigationSearch />
       </KeyboardAwareScrollView>
     );
   }

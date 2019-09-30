@@ -14,8 +14,7 @@
     "postinstall": "npx jetify",
     "emulator": "cd ..\\..\\..\\Android\\android-sdk\\emulator && emulator -avd Pixel_3a_API_29",
     "emulator1": "",
-    "emulator2": ""
-    
+    "emulator2": "cd C:\\Users\\jody4\\AppData\\Local\\Android\\Sdk\\emulator && emulator -avd Pixel_3_Edited_API_27"
   },
   "dependencies": {
     "jetifier": "^1.6.4",
