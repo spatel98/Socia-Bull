@@ -5,6 +5,9 @@ import { createStackNavigator } from 'react-navigation-stack'
 
 import Home from '../containers/Home/Home'
 import LoginScreen from '../containers/Auth/LoginScreen'
+import SignUpScreen from '../containers/Auth/SignUpScreen'
+import ForgotPassword from '../containers/Auth/ForgotPassword'
+import Loading from '../containers/Auth/Loading'
 
 
 const AppNavigator = createStackNavigator(
@@ -21,10 +24,28 @@ const AppNavigator = createStackNavigator(
         header: null,
       },
       animation: 'fade',
+    },
+    SignUp: {
+      screen: SignUpScreen,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    ForgotPassword: {
+      screen: ForgotPassword,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Loading: {
+      screen: Loading,
+      navigationOptions: {
+        header: null,
+      },
     }
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Loading',
   }
 )
 

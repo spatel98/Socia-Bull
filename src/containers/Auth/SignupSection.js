@@ -6,19 +6,14 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
-  ImageBackground,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  TextInput,
 } from 'react-native';
 
 export default class SignupSection extends React.Component {
     render() {
       return (
         <View style={styles.signupContainer}>
-          <Text style={styles.signupText}>Create Account</Text>
-          <Text style={styles.signupText}>Forgot Password?</Text>
+          <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('SignUp')}>Create Account</Text>
+          <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
         </View>
       );
     }

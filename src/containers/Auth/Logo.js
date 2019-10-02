@@ -20,7 +20,7 @@ export default class Logo extends React.Component {
       return (
         <View style={styles.container}>
           <Image source={logoImg} style={styles.image} />
-          <Text style={styles.text}>STUDENT DISCOUNTS</Text>
+          <Text style={styles.header}>Soci-A-Bull</Text>
         </View>
       );
     }
@@ -28,7 +28,7 @@ export default class Logo extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-    	flex: 3,
+    	flex: 1,
     	alignItems: 'center',
     	justifyContent: 'center',
     },
@@ -36,10 +36,10 @@ const styles = StyleSheet.create({
     	width: 80,
     	height: 80,
     },
-    text: {
+    header: {
     	color: 'white',
     	fontWeight: 'bold',
     	backgroundColor: 'transparent',
-    	marginTop: 20,
+      marginTop: 20,
     },
 });

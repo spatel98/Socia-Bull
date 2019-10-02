@@ -24,17 +24,31 @@ export default class ButtonSubmit extends Component {
 
     this.state = {
       isLoading: false,
+      email: "",
+      password: "",
     };
 
     this.buttonAnimated = new Animated.Value(0);
     this.growAnimated = new Animated.Value(0);
-    this._onPress = this._onPress.bind(this);
   }
 
-  _onPress() {
+  _onPress = () => {
     if (this.state.isLoading) return;
 
     this.setState({isLoading: true});
+
+    this.state.email = this.props.email;
+    this.state.password = this.props.password;
+
+    handleLogin = () => {
+      const { email, password } = this.state
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(() => this.props.navigation.navigate('Home'))
+        .catch(error => this.setState({ errorMessage: error.message }))
+    }
+
     Animated.timing(this.buttonAnimated, {
       toValue: 1,
       duration: 200,
