@@ -1,13 +1,20 @@
 import React, {Component} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
-import NavigationHome from './NavHome'
-
+import {
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    ImageBackground,
+    KeyboardAvoidingView,
+    TouchableOpacity,
+    TextInput,
+  } from 'react-native';
 export default class Home extends React.Component {
   render(){
     return(
       <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
-          <NavigationHome />
+          <Text>Home</Text>
       </KeyboardAwareScrollView>
     );
   }

@@ -46,7 +46,7 @@ export default class ButtonSubmit extends Component {
     }, 2000);
 
     setTimeout(() => {
-      this.props.navigation.navigate('Home')
+      this.props.navigation.navigate('NavigationBar')
       this.setState({isLoading: false});
       this.buttonAnimated.setValue(0);
       this.growAnimated.setValue(0);
