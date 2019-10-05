@@ -14,8 +14,8 @@
     "postinstall": "npx jetify",
     "emulator": "cd ..\\..\\..\\Android\\android-sdk\\emulator && emulator -avd Pixel_3a_API_29",
     "emulator1": "",
-    "emulator2": "",
-    "emulator4": "cd C:\\Users\\tnpin\\AppData\\Local\\Android\\Sdk\\emulator && emulator -avd Pixel_3_API_29"
+    "emulator4": "cd C:\\Users\\tnpin\\AppData\\Local\\Android\\Sdk\\emulator && emulator -avd Pixel_3_API_29",
+    "emulator2": "cd C:\\Users\\jody4\\AppData\\Local\\Android\\Sdk\\emulator && emulator -avd Pixel_3_Edited_API_27"
   },
   "dependencies": {
     "jetifier": "^1.6.4",
@@ -26,10 +26,15 @@
     "react-native-elements": "^1.2.5",
     "react-native-firebase": "^5.5.6",
     "react-native-gesture-handler": "^1.4.1",
+    "react-native-icons": "^0.7.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
+    "react-native-paper": "^2.16.0",
+    "react-native-screens": "^2.0.0-alpha.3",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^4.0.10",
-    "react-navigation-stack": "^1.9.1"
+    "react-navigation-material-bottom-tabs": "^2.1.2",
+    "react-navigation-stack": "^1.9.1",
+    "react-navigation-tabs": "^2.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",

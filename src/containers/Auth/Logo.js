@@ -13,7 +13,7 @@ export default class Logo extends React.Component {
       return (
         <View style={styles.container}>
           <Image source={logoImg} style={styles.image} />
-          <Text style={styles.header}>Soci-A-Bull</Text>
+          <Text style={styles.text}>SOCI-A-BULL</Text>
         </View>
       );
     }
