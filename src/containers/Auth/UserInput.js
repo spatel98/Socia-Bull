@@ -85,7 +85,3 @@ const styles = StyleSheet.create({
       tintColor: 'rgba(255,255,255,0.2)',
     },
 });
-
-/*
-
-*/

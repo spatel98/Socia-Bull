@@ -1,16 +1,9 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import Dimensions from 'Dimensions';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  ImageBackground,
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  TextInput,
 } from 'react-native';
 
 import logoImg from '../../assets/images/logo.png';
@@ -28,7 +21,7 @@ export default class Logo extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-    	flex: 1,
+    	flex: 1.5,
     	alignItems: 'center',
     	justifyContent: 'center',
     },

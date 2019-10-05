@@ -1,15 +1,17 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
-import firebase from 'react-native-firebase'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import SignUpForm from './SignUpForm'
 
 export default class SignUp extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <SignUpForm navigation={this.props.navigation}></SignUpForm>
-      </View>
+      <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
+        <View style={styles.container}>
+          <SignUpForm navigation={this.props.navigation}></SignUpForm>
+        </View>
+      </KeyboardAwareScrollView>
     )
   }
 }

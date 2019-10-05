@@ -1,8 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dimensions from 'Dimensions';
-//import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import firebase from 'react-native-firebase'
+
+import { Button } from 'react-native-elements';
+
+import AnimateLoadingButton from 'react-native-animate-loading-button';
+
 import {
   StyleSheet,
   Text,
@@ -15,7 +19,7 @@ import {
 } from 'react-native';
 
 import UserInput from './UserInput';
-//import ButtonSubmit from './ButtonSubmit';
+import ButtonSubmit from './ButtonSubmit';
 import usernameImg from '../../assets/images/username.png';
 import passwordImg from '../../assets/images/password.png';
 
@@ -39,6 +43,14 @@ export default class Form extends React.Component {
 
     handleLogin = () => {
       const { email, password } = this.state
+
+      this.loadingButton.showLoading(true);
+
+      // mock
+      setTimeout(() => {
+        this.loadingButton.showLoading(false);
+      }, 2000);
+
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
@@ -79,9 +91,13 @@ export default class Form extends React.Component {
             showPass={this.showPass}
             onChangeText={this.handleTextChange2}
           />
-          <TouchableOpacity style={styles.button} onPress={this.handleLogin}>
-            <Text style={styles.btntext}>Login</Text>
-          </TouchableOpacity>
+
+          <ButtonSubmit
+            navigation={this.props.navigation}
+            email = {this.state.email}
+            password = {this.state.password}
+          ></ButtonSubmit>
+          
           <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('SignUp')}>Create Account</Text>
           <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
         </View>
@@ -89,13 +105,35 @@ export default class Form extends React.Component {
     }
 }
 
+/*
+<TouchableOpacity style={styles.button} onPress={this.handleLogin}>
+            <Text style={styles.btntext}>Login</Text>
+          </TouchableOpacity>
+
+          <Button type="solid" loading style={styles.button} onPress={this.handleLogin}>
+            <Text style={styles.btntext}>Login</Text>
+          </Button>
+
+<AnimateLoadingButton
+            ref={c => (this.loadingButton = c)}
+            style = {styles.button}
+            width={300}
+            height={50}
+            title="BUTTON"
+            titleFontSize={16}
+            titleColor="rgb(255,255,255)"
+            backgroundColor="rgb(89,203,189)"
+            borderRadius={4}
+            onPress={this.handleLogin}
+          />
+*/
+
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
 	formContainer: {
-    flex: 1,
-    //alignItems: 'center',
+    flex: 0.1,
     alignSelf: 'stretch',
   },
   header: {
