@@ -1,15 +1,20 @@
 import React from 'react'
-import { StyleSheet, Text, TextInput, View, Button, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
 import firebase from 'react-native-firebase'
 
+import { Button } from 'react-native-elements';
+
 export default class SignUpForm extends React.Component {
-	state = { firstName: '', lastName: '', phoneNumber: '', email: '', password: '', errorMessage: null }
+	state = { firstName: '', lastName: '', phoneNumber: '', email: '', password: '', showLoading: false, errorMessage: null }
 	
 	handleSignUp = () => {
+
+    this.setState({showLoading: true})
+
     firebase
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => this.props.navigation.navigate('Home'))
+      .then(() => this.props.navigation.navigate('NavigationBar'))
       .catch(error => this.setState({ errorMessage: error.message }))
 	}
 	
@@ -67,9 +72,14 @@ export default class SignUpForm extends React.Component {
           onChangeText={password => this.setState({ password })}
           value={this.state.password}
         />
-        <TouchableOpacity style={styles.button} onPress={this.handleSignUp}>
-          <Text style={styles.btntext}>Sign Up</Text>
-        </TouchableOpacity>
+        <Button
+          title="Sign Up"
+          type="solid"
+          loading={this.state.showLoading}
+          buttonStyle={styles.button}
+          onPress={this.handleSignUp}
+          >
+        </Button>
 
         <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('Login')}>Already have an account? Login</Text>
       </View>

@@ -29,10 +29,8 @@ const styles = StyleSheet.create({
     	width: 80,
     	height: 80,
     },
-    header: {
+    text: {
     	color: 'white',
     	fontWeight: 'bold',
-    	backgroundColor: 'transparent',
-      marginTop: 20,
     },
 });

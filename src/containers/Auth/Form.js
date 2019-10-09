@@ -5,8 +5,6 @@ import firebase from 'react-native-firebase'
 
 import { Button } from 'react-native-elements';
 
-import AnimateLoadingButton from 'react-native-animate-loading-button';
-
 import {
   StyleSheet,
   Text,
@@ -19,7 +17,6 @@ import {
 } from 'react-native';
 
 import UserInput from './UserInput';
-import ButtonSubmit from './ButtonSubmit';
 import usernameImg from '../../assets/images/username.png';
 import passwordImg from '../../assets/images/password.png';
 
@@ -31,7 +28,8 @@ export default class Form extends React.Component {
         press: false,
         email: "",
         password: "",
-        errorMessage: null
+        errorMessage: null,
+        showLoading: false
       };
     }
   
@@ -44,18 +42,13 @@ export default class Form extends React.Component {
     handleLogin = () => {
       const { email, password } = this.state
 
-      this.loadingButton.showLoading(true);
-
-      // mock
-      setTimeout(() => {
-        this.loadingButton.showLoading(false);
-      }, 2000);
+      this.setState({showLoading: true})
 
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
-        .then(() => this.props.navigation.navigate('Home'))
-        .catch(error => this.setState({ errorMessage: error.message }))
+        .then(() => this.props.navigation.navigate('NavigationBar'))
+        .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
     }
 
     handleTextChange1 = (email) => {
@@ -67,6 +60,7 @@ export default class Form extends React.Component {
     }
 
     render() {
+      const { showLoading } = this.state
       return (
         <View style={styles.formContainer}>
           {this.state.errorMessage &&
@@ -92,11 +86,14 @@ export default class Form extends React.Component {
             onChangeText={this.handleTextChange2}
           />
 
-          <ButtonSubmit
-            navigation={this.props.navigation}
-            email = {this.state.email}
-            password = {this.state.password}
-          ></ButtonSubmit>
+          <Button
+            title="Login"
+            type="solid"
+            loading={showLoading}
+            buttonStyle={styles.button}
+            onPress={this.handleLogin}
+            >
+          </Button>
           
           <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('SignUp')}>Create Account</Text>
           <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
@@ -104,29 +101,6 @@ export default class Form extends React.Component {
       );
     }
 }
-
-/*
-<TouchableOpacity style={styles.button} onPress={this.handleLogin}>
-            <Text style={styles.btntext}>Login</Text>
-          </TouchableOpacity>
-
-          <Button type="solid" loading style={styles.button} onPress={this.handleLogin}>
-            <Text style={styles.btntext}>Login</Text>
-          </Button>
-
-<AnimateLoadingButton
-            ref={c => (this.loadingButton = c)}
-            style = {styles.button}
-            width={300}
-            height={50}
-            title="BUTTON"
-            titleFontSize={16}
-            titleColor="rgb(255,255,255)"
-            backgroundColor="rgb(89,203,189)"
-            borderRadius={4}
-            onPress={this.handleLogin}
-          />
-*/
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;

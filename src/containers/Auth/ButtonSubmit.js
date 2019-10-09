@@ -45,7 +45,7 @@ export default class ButtonSubmit extends Component {
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
-        .then(() => this.props.navigation.navigate('Home'))
+        .then(() => this.props.navigation.navigate('NavigationBar'))
         .catch(error => this.setState({ errorMessage: error.message }))
     }
 
@@ -115,12 +115,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   button: {
+    alignSelf: 'stretch',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F035E0',
-    height: MARGIN,
-    borderRadius: 20,
-    zIndex: 100,
+    padding: 20,
+    backgroundColor: '#59cbbd',
+    marginTop: 30,
+    marginBottom: 30
   },
   circle: {
     height: MARGIN,
@@ -142,3 +142,12 @@ const styles = StyleSheet.create({
     height: 24,
   },
 });
+
+/*
+  alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F035E0',
+    height: MARGIN,
+    borderRadius: 20,
+    zIndex: 100,
+*/
