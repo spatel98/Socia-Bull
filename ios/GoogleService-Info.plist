@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>320775191860-adi2u8u8f3jb6a16f8jjmqr7d4kl90ob.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.320775191860-adi2u8u8f3jb6a16f8jjmqr7d4kl90ob</string>
+	<key>API_KEY</key>
+	<string>AIzaSyACpWQ9r9ynjHY-Rpcuc1jr8cxKDSnApcE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>320775191860</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.softsysdevproject.sociabull</string>
+	<key>PROJECT_ID</key>
+	<string>socia-bull</string>
+	<key>STORAGE_BUCKET</key>
+	<string>socia-bull.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:320775191860:ios:7e579d8dc5508e3baaf961</string>
+	<key>DATABASE_URL</key>
+	<string>https://socia-bull.firebaseio.com</string>
+</dict>
+</plist>
