@@ -15,10 +15,11 @@ export default class SignUpForm extends React.Component {
       .auth()
       .createUserWithEmailAndPassword(this.state.email, this.state.password)
       .then(() => this.props.navigation.navigate('NavigationBar'))
-      .catch(error => this.setState({ errorMessage: error.message }))
+      .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
 	}
 	
   render() {
+    const { showLoading } = this.state
     return (
       <View style={styles.container}>
         <Text style={styles.header}>Sign Up</Text>
@@ -75,7 +76,7 @@ export default class SignUpForm extends React.Component {
         <Button
           title="Sign Up"
           type="solid"
-          loading={this.state.showLoading}
+          loading={showLoading}
           buttonStyle={styles.button}
           onPress={this.handleSignUp}
           >

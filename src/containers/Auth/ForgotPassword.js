@@ -13,8 +13,10 @@ export default class SignUpForm extends React.Component {
 
     firebase
       .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => this.props.navigation.navigate('NavigationBar'))
+      .sendPasswordResetEmail(this.state.email)
+      .then(() => {
+        alert("Please check your email!!!")
+        this.props.navigation.navigate('Login')})
       .catch(error => this.setState({ errorMessage: error.message }))
 	}
 	
@@ -63,7 +65,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginBottom: 40,
     borderBottomColor: '#199187',
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   textInput: {
     alignSelf: 'stretch',
