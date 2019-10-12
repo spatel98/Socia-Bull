@@ -51,51 +51,79 @@ const msgs = [
     textstyle:{
       paddingLeft: 16,
       paddingTop: 14
+    },
+    titlestyle:{
+    textAlign: 'center',
+    paddingBottom: 4,
+    fontSize: 20
     }
   }
   ); 
-
-
-
-
-
-
 export default class Chats extends React.Component {
+
+  keyExtractor = (item, index) => index.toString()
+
+  onRefresh = () => {
+
+  }
+
+   addFriend = (props) => {
+    return (
+      <ListItem
+      title={"Add Friend"}
+      
+      leftElement={
+        <Icon name='plus-circle' color={'grey'} size={50} type ='material-community'/>
+    
+      }
+      bottomDivider
+      chevron
+      ></ListItem>
+    );
+  }
+
+  renderItem = ({ item }) => (
+    <ListItem
+      title={item.name}
+      subtitle={item.lastMessage}
+      leftElement={
+        <Image
+        style={cardstyles.imagestyle}
+        resizeMode="cover"
+        source={{uri: item.photo}}
+        />
+      }
+
+      rightElement={
+        <Icon name='book' color={'grey'} size={24} type ='material-community'/>
+      }
+  
+      bottomDivider
+      chevron
+      
+    />
+  )
+
+
   render(){
     return(
-      <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
+      <View>
+        <Text style={cardstyles.titlestyle}>
+          Chats
+        </Text>
+     
+          <FlatList
+          title = "Chats"
+          keyExtractor = {this.keyExtractor}
+          data={msgs}
+          refreshing = {true}
+          renderItem={this.renderItem}
+          onRefresh={this.onRefresh}
+          ListHeaderComponent={this.addFriend}
+          />
         
-        <Card title="Chats" containerStyle={cardstyles.container}>
-        {
-
-        msgs.map((u, i) => {
-          
-          return (
-            <ListItem
-              key={i}
-              leftElement={
-                <Image
-                style={cardstyles.imagestyle}
-                resizeMode="cover"
-                source={{uri: u.photo}}
-                />
-              }
-
-              
-              rightElement={
-                <Icon name='arrow-right' color={'grey'} size={24} type ='material-community'/>
-              }
-              title={u.name}
-              subtitle={u.lastMessage}
-              borderBottomWidth={1}
-            />
-          );
-      })
-
-    }
-    </Card>
-      </KeyboardAwareScrollView>
-    );
+      </View>
+    )
   }
 }
 
