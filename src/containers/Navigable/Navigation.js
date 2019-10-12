@@ -47,21 +47,21 @@ export default createMaterialBottomTabNavigator({
     navigationOptions:{
       tabBarLabel:'Home',
       tabBarIcon:({tintColor})=>(
-        <Icon name='home' color={tintColor} size={24}/>
+        <Icon name='home' color={tintColor} size={24} type ='material'/>
       )
     }},
   Search:{screen:SearchScreen,
     navigationOptions:{
       tabBarLabel:'Search',
       tabBarIcon:({tintColor})=>(
-        <Icon name='heart' color={tintColor} size={24}/>
+        <Icon name='heart' color={tintColor} size={24} type ='material'/>
       )
     }},
   Chats:{screen:ChatsScreen,
     navigationOptions:{
       tabBarLabel:'Chats',
       tabBarIcon:({tintColor})=>(
-        <Icon name='chat' color={tintColor} size={24}/>
+        <Icon name='chat' color={tintColor} size={24} type ='material'/>
       )
     }},
 },
