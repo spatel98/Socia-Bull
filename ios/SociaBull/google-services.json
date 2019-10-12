@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "320775191860",
+    "firebase_url": "https://socia-bull.firebaseio.com",
+    "project_id": "socia-bull",
+    "storage_bucket": "socia-bull.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320775191860:android:bdc751ee22d842caaaf961",
+        "android_client_info": {
+          "package_name": "com.softsysdevproject.sociabull"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320775191860-sro0qo21fhopkb7c4tom65l05tgk50oe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpN6SX3vH6_JVEEBghKGD1Wci4QtB5Sas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320775191860-sro0qo21fhopkb7c4tom65l05tgk50oe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
