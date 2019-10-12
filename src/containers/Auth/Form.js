@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dimensions from 'Dimensions';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import firebase from 'react-native-firebase'
+
+import { Button } from 'react-native-elements';
+
 import {
   StyleSheet,
   Text,
@@ -23,7 +26,10 @@ export default class Form extends React.Component {
       this.state = {
         showPass: true,
         press: false,
-        username: "",
+        email: "",
+        password: "",
+        errorMessage: null,
+        showLoading: false
       };
     }
   
@@ -32,17 +38,42 @@ export default class Form extends React.Component {
         ? this.setState({showPass: false, press: true})
         : this.setState({showPass: true, press: false});
     }
-  
+
+    handleLogin = () => {
+      const { email, password } = this.state
+
+      this.setState({showLoading: true})
+
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(() => this.props.navigation.navigate('NavigationBar'))
+        .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
+    }
+
+    handleTextChange1 = (email) => {
+      this.state.email = email;
+    }
+    
+    handleTextChange2 = (password) => {
+      this.state.password = password;
+    }
+
     render() {
+      const { showLoading } = this.state
       return (
-        <KeyboardAvoidingView behavior="padding" style={styles.formContainer}>
+        <View style={styles.formContainer}>
+          {this.state.errorMessage &&
+          <Text style={{ color: 'red' }}>
+            {this.state.errorMessage}
+          </Text>}
           <UserInput
             source={usernameImg}
-            placeholder="Username"
+            placeholder="Email"
             autoCapitalize={'none'}
             returnKeyType={'done'}
             autoCorrect={false}
-            onChangeText={(username) => this.setState({ username: username })}
+            onChangeText={this.handleTextChange1}
           />
           <UserInput
             source={passwordImg}
@@ -52,8 +83,21 @@ export default class Form extends React.Component {
             autoCapitalize={'none'}
             autoCorrect={false}
             showPass={this.showPass}
+            onChangeText={this.handleTextChange2}
           />
-        </KeyboardAvoidingView>
+
+          <Button
+            title="Login"
+            type="solid"
+            loading={showLoading}
+            buttonStyle={styles.button}
+            onPress={this.handleLogin}
+            >
+          </Button>
+          
+          <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('SignUp')}>Create Account</Text>
+          <Text style={styles.signupText} onPress={() => this.props.navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
+        </View>
       );
     }
 }
@@ -63,40 +107,33 @@ const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
 	formContainer: {
-    flex: 1,
+    flex: 0.1,
+    alignSelf: 'stretch',
+  },
+  header: {
+    fontSize: 24,
+    color: '#fff',
+    paddingBottom: 30,
+    marginBottom: 40,
+    borderBottomColor: '#199187',
+    borderBottomWidth: 1
+  },
+  button: {
+    alignSelf: 'stretch',
     alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#59cbbd',
+    marginTop: 30,
+    marginBottom: 40
   },
-  btnEye: {
-    position: 'absolute',
-    zIndex: 99,
-    width: 22,
-    height: 22,
-    right: 35,
-    top: 8,
+  btntext: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
-  iconEye: {
-    width: 25,
-    height: 25,
-    tintColor: 'rgba(0,0,0,0.2)',
-  },
-  input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    width: DEVICE_WIDTH - 40,
-    height: 40,
-    marginHorizontal: 20,
-    paddingLeft: 45,
-    borderRadius: 20,
-    color: '#ffffff',
-  },
-  inputWrapper: {
-    flex: 1,
-  },
-  inlineImg: {
-    position: 'absolute',
-    zIndex: 99,
-    width: 22,
-    height: 22,
-    left: 35,
-    top: 9,
+  signupText: {
+    color: 'white',
+    backgroundColor: 'transparent',
+    textAlign: 'center',
+    marginBottom: 20
   },
 });

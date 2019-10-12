@@ -1,24 +1,18 @@
-import React, {Component} from 'react';
+import React from 'react'
+import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import {
-  StyleSheet,
-  View,
-} from 'react-native';
+import SignUpForm from './SignUpForm'
 
-import Logo from './Logo'
-import Form from './Form'
-
-export default class LoginScreen extends React.Component {
-  render(){
-    return(
+export default class SignUp extends React.Component {
+  render() {
+    return (
       <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
         <View style={styles.container}>
-          <Logo />
-          <Form navigation={this.props.navigation}/>
+          <SignUpForm navigation={this.props.navigation}></SignUpForm>
         </View>
       </KeyboardAwareScrollView>
-    );
+    )
   }
 }
 
