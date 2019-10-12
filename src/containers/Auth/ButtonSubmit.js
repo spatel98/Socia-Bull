@@ -24,17 +24,31 @@ export default class ButtonSubmit extends Component {
 
     this.state = {
       isLoading: false,
+      email: "",
+      password: "",
     };
 
     this.buttonAnimated = new Animated.Value(0);
     this.growAnimated = new Animated.Value(0);
-    this._onPress = this._onPress.bind(this);
   }
 
-  _onPress() {
+  _onPress = () => {
     if (this.state.isLoading) return;
 
     this.setState({isLoading: true});
+
+    this.state.email = this.props.email;
+    this.state.password = this.props.password;
+
+    handleLogin = () => {
+      const { email, password } = this.state
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(() => this.props.navigation.navigate('NavigationBar'))
+        .catch(error => this.setState({ errorMessage: error.message }))
+    }
+
     Animated.timing(this.buttonAnimated, {
       toValue: 1,
       duration: 200,
@@ -101,12 +115,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   button: {
+    alignSelf: 'stretch',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F035E0',
-    height: MARGIN,
-    borderRadius: 20,
-    zIndex: 100,
+    padding: 20,
+    backgroundColor: '#59cbbd',
+    marginTop: 30,
+    marginBottom: 30
   },
   circle: {
     height: MARGIN,
@@ -128,3 +142,12 @@ const styles = StyleSheet.create({
     height: 24,
   },
 });
+
+/*
+  alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F035E0',
+    height: MARGIN,
+    borderRadius: 20,
+    zIndex: 100,
+*/
