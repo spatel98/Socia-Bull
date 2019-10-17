@@ -14,6 +14,7 @@
     "postinstall": "npx jetify",
     "emulator": "cd ..\\..\\..\\Android\\android-sdk\\emulator && emulator -avd Pixel_3a_API_29",
     "emulator1": "",
+    "emulator4": "cd C:\\Users\\tnpin\\AppData\\Local\\Android\\Sdk\\emulator && emulator -avd Pixel_3_API_29",
     "emulator2": "cd C:\\Users\\jody4\\AppData\\Local\\Android\\Sdk\\emulator && emulator -avd Pixel_3_Edited_API_27"
   },
   "dependencies": {
@@ -21,6 +22,8 @@
     "prop-types": "^15.7.2",
     "react": "16.8.6",
     "react-native": "0.60.5",
+    "react-native-animate-loading-button": "^1.0.3",
+    "react-native-elements": "^1.2.5",
     "react-native-firebase": "^5.5.6",
     "react-native-gesture-handler": "^1.4.1",
     "react-native-icons": "^0.7.1",

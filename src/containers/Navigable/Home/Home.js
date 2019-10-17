@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     color:"#fff"
   },
   Name: {
-    top: 150,
+    top: 25,
     fontSize: 16,
     justifyContent: 'center'
   },
