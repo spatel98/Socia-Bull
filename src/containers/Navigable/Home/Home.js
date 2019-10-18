@@ -20,7 +20,7 @@ import {
     takePhotoButtonTitle: 'Take a photo',
     chooseFromLibraryButtonTitle: 'Choose a photo',
   }
-export default class Home extends Component<Props> {
+export default class Home extends Component {
   constructor(props){
     super(props);
     this.state={
@@ -58,26 +58,34 @@ export default class Home extends Component<Props> {
   render(){
     const { photo } = this.state
     return(
-      <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
-        <View style={styles.container}>
-          <Image style={styles.Image}
-            source={this.state.avatarSource}/>
-            <TouchableOpacity style = {styles.SelectImgButton}
+      <View style={styles.container}>
+      <View style={styles.header}></View>
+      <TouchableOpacity style = {styles.avatar2}
               onPress={this.handleChoosePhoto}>
-              <Text style={styles.SelectImage}>Select Image</Text>
-            </TouchableOpacity>
-            <Text style={styles.Name}>FIRST NAME</Text>
+              <Image style={styles.avatar} source={this.state.avatarSource}/>
+      </TouchableOpacity>
+      <View style={styles.body}>
+        <View style={styles.bodyContent}>
+          <Text style={styles.name}>NAME</Text>
+          <Text style={styles.info}>email@fuck.com</Text>
+          <Text style={styles.info}>(###)###-####</Text>
+          <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
+          
+          <TouchableOpacity style={styles.buttonContainer}>
+            <Text>Opcion 1</Text>  
+          </TouchableOpacity>              
+          <TouchableOpacity style={styles.buttonContainer}>
+            <Text>Opcion 2</Text> 
+          </TouchableOpacity>
         </View>
-      </KeyboardAwareScrollView>
+    </View>
+  </View>
     );
   }
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 0.05,
-    top: 50,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
+    backgroundColor:'#36485f',
   },
   SelectImgButton: {
     backgroundColor:'grey',
@@ -93,10 +101,70 @@ const styles = StyleSheet.create({
   SelectImage: {
     color:"#fff"
   },
-  Name: {
-    top: 25,
-    fontSize: 16,
-    justifyContent: 'center'
+  header:{
+    backgroundColor: "#59cbbd",
+    height:150,
+  },
+  avatar: {
+    width: 130,
+    height: 130,
+    borderRadius: 63,
+    borderWidth: 4,
+    borderColor: "white",
+    alignSelf:'center',
+    position: 'absolute',
+    zIndex: 106,
+  },
+  avatar2: {
+    width: 130,
+    height: 130,
+    borderRadius: 63,
+    borderWidth: 4,
+    borderColor: "white",
+    alignSelf:'center',
+    position: 'absolute',
+    marginTop:80,
+    zIndex: 105,
+  },
+  name:{
+    fontSize:22,
+    color:"#FFFFFF",
+    fontWeight:'600',
+  },
+  body:{
+    marginTop:50,
+  },
+  bodyContent: {
+    flex: 1,
+    alignItems: 'center',
+    padding:30,
+  },
+  name:{
+    fontSize:28,
+    color: "white",
+    fontWeight: "600"
+  },
+  info:{
+    fontSize:16,
+    color: "#59cbbd",
+    marginTop:10
+  },
+  description:{
+    fontSize:16,
+    color: "white",
+    marginTop:10,
+    textAlign: 'center'
+  },
+  buttonContainer: {
+    marginTop:10,
+    height:45,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom:20,
+    width:250,
+    borderRadius:30,
+    backgroundColor: "#59cbbd",
   },
 })
 

@@ -69,5 +69,5 @@ export default createMaterialBottomTabNavigator({
   initialRouteName: 'Home',
   order: ['Home','Search','Chats'],
   activeTintColor: 'white',
-  barStyle: {backgroundColor: '#36485f'},
+  barStyle: {backgroundColor: '#59cbbd'},
 })
