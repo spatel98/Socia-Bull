@@ -63,11 +63,8 @@ const msgs = [
     },
     modalStyle:{
       backgroundColor: 'white',
-    //  width: Dimensions.get("screen").width * 0.65,
-   //   top: Dimensions.get("screen").height*  0.15,
       alignItems: 'center',
       alignSelf: 'center',
-     // height: 50,
       padding: 22,
       justifyContent: "center",
       borderRadius: 4,
