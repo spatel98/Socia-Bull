@@ -19,7 +19,7 @@ ListItem, Icon
 } from 'react-native-elements';
 import { FlatList } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
-import { Searchbar } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 
 const msgs = [
   {
@@ -84,15 +84,30 @@ export default class Chats extends React.Component {
   {
     addFriendVisible: false,
     search: '',
+    friendText: "Enter Friend's Username"
   }
 
   onRefresh = () => {
 
   }
 
+  sendRequest = () => {
+    this.state.friendText = "Friend Request Sent";
+  }
+
+
   setAddFriendVisible(t) {
+
     this.setState({addFriendVisible: t});
-    this.setState({search: ''})
+
+    if(!t)
+    {
+      this.setState({search: ''})
+    }
+    else
+    {
+      this.state.friendText = "Enter Friend's Username"
+    }
   }
 
   updateSearch = search => {
@@ -142,7 +157,7 @@ export default class Chats extends React.Component {
 
   render(){
     return(
-      <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
+      <View>
         <Text style={styles.titlestyle}>
           Chats
         </Text>
@@ -160,20 +175,28 @@ export default class Chats extends React.Component {
           onBackdropPress={()=> this.setAddFriendVisible(false)}
           animationIn="slideInLeft"
           animationOut="slideOutRight"
-          animationInTiming={500}
-          animationOutTiming={500}
+          animationInTiming={400}
+          animationOutTiming={400}
           > 
               <View style={styles.modalStyle}>
-              <Text style= {styles.textstyle}>Enter Friend's Username</Text>
-              <Searchbar 
-              searchIcon = {null}
-              clearIcon={null}
+              <Text style= {styles.textstyle}>{this.state.friendText}</Text>
+              <TextInput 
+              style={{borderColor: '#36485f', borderWidth: 1, maxWidth: 1000}}
               placeholder="Username"
-              onChangeText={this.updateSearch}
-              value={this.state.search}/>
+              onChangeText={text => this.updateSearch(text)}
+              value={this.state.search}
+              multiline={false}
+              onSubmitEditing={() => this.sendRequest()}
+              rightElement={
+                <Button onPress={this.sendRequest()}>
+
+                </Button>
+
+              }
+              />
               </View>
         </Modal>
-      </KeyboardAwareScrollView>
+      </View>
     )
   }
 }
