@@ -13,8 +13,6 @@ export default class SignUpForm extends React.Component {
       lastName,
       phoneNumber,
       email,
-      date,
-      gender,
       password
     } = this.state
     this.setState({showLoading: true})
@@ -37,8 +35,6 @@ export default class SignUpForm extends React.Component {
           lastName,
           phoneNumber,
           email,
-          date,
-          gender,
           netId: email.substring(0, email.indexOf("@")),
         })
         .then(function() {
