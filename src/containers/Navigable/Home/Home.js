@@ -13,8 +13,10 @@ import {
     KeyboardAvoidingView,
     TouchableOpacity,
     TextInput,
+    CheckBox,
   } from 'react-native';
-  import logo from "../../../assets/images/logo.png"
+  import logo from "../../../assets/images/logo.png";
+  import Dating from "./Dating";
   const options={
     title: 'Upload an Image',
     takePhotoButtonTitle: 'Take a photo',
@@ -25,7 +27,10 @@ export default class Home extends Component {
     super(props);
     this.state={
       avatarSource: null,
-      pic:null
+      pic:null,
+      dates: false,
+      friends: false,
+      studybuddies: false,
     }
   }
   state = {
@@ -55,6 +60,20 @@ export default class Home extends Component {
       }
     });
   }
+  CheckboxDates(){
+    this.setState({dates:!this.state.dates})
+  }
+  CheckboxFriends(){
+    this.setState({friends:!this.state.friends})
+  }
+  CheckboxStudyBuddies(){
+    this.setState({studybuddies:!this.state.studybuddies})
+  }
+  ImplementDates(){
+    if(dates){
+      return <Dating/>
+    }
+  }
   render(){
     const { photo } = this.state
     return(
@@ -66,17 +85,20 @@ export default class Home extends Component {
       </TouchableOpacity>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
-          <Text style={styles.name}>NAME</Text>
-          <Text style={styles.info}>email@fuck.com</Text>
+          <Text style={styles.name}>FIRST LAST, AGE</Text>
+          <Text style={styles.info}>fuck@mail.usf.edu</Text>
           <Text style={styles.info}>(###)###-####</Text>
           <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
-          
-          <TouchableOpacity style={styles.buttonContainer}>
-            <Text>Opcion 1</Text>  
-          </TouchableOpacity>              
-          <TouchableOpacity style={styles.buttonContainer}>
-            <Text>Opcion 2</Text> 
-          </TouchableOpacity>
+          <Text style={styles.lookingFor}>Looking For</Text>
+          <Text style={styles.textBox}>Dates</Text> 
+          <CheckBox style={styles.boxes} value={this.state.dates}
+          onChange={()=>this.CheckboxDates()}/>
+          <Text style={styles.textBox}>Friends</Text> 
+          <CheckBox style={styles.boxes} value={this.state.friends}
+          onChange={()=>this.CheckboxDates()}/>
+          <Text style={styles.textBox}>Study Buddies</Text> 
+          <CheckBox style={styles.boxes} value={this.state.studybuddies}
+          onChange={()=>this.CheckboxStudyBuddies()}/>
         </View>
     </View>
   </View>
@@ -86,6 +108,12 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor:'#36485f',
+    height: 800,
+  },
+  textBox: {
+    marginTop: 10,
+    alignItems:'center',
+    color: '#fff',
   },
   SelectImgButton: {
     backgroundColor:'grey',
@@ -126,6 +154,11 @@ const styles = StyleSheet.create({
     marginTop:80,
     zIndex: 105,
   },
+  lookingFor:{
+    fontSize:20,
+    color:"#FFFFFF",
+    fontWeight:'300',
+  },
   name:{
     fontSize:22,
     color:"#FFFFFF",
@@ -153,7 +186,8 @@ const styles = StyleSheet.create({
     fontSize:16,
     color: "white",
     marginTop:10,
-    textAlign: 'center'
+    textAlign: 'center',
+    marginBottom:50,
   },
   buttonContainer: {
     marginTop:10,
