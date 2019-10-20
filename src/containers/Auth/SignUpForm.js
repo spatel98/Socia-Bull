@@ -8,14 +8,43 @@ export default class SignUpForm extends React.Component {
 	state = { firstName: '', lastName: '', phoneNumber: '', email: '', password: '', showLoading: false, errorMessage: null }
 	
 	handleSignUp = () => {
-
+    const {
+      firstName,
+      lastName,
+      phoneNumber,
+      email,
+      password
+    } = this.state
     this.setState({showLoading: true})
+
+    var domain = email.replace(/.*@/, "").toLowerCase()
+    console.log("user domain: " + domain)
+    if(domain !== 'mail.usf.edu') {
+      this.setState({ showLoading: false, errorMessage: "Please use your USF Email." })
+      return 0
+    }
 
     firebase
       .auth()
-      .createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => {
-        this.props.navigation.navigate('NavigationBar')})
+      .createUserWithEmailAndPassword(email, password)
+      .then((user) => {
+        // Add user to collection
+        console.log('user after sign up:', user)
+        firebase.firestore().collection("users").doc(user.uid).set({
+          firstName,
+          lastName,
+          phoneNumber,
+          email,
+          netId: email.substring(0, email.indexOf("@")),
+        })
+        .then(function() {
+          console.log("Document successfully written!");
+        })
+        .catch(function(error) {
+          console.error("Error writing document: ", error);
+        });
+        this.props.navigation.navigate('NavigationBar')
+      })
       .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
 	}
 	
