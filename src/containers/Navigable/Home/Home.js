@@ -86,7 +86,7 @@ export default class Home extends Component {
       <View style={styles.body}>
         <View style={styles.bodyContent}>
           <Text style={styles.name}>FIRST LAST, AGE</Text>
-          <Text style={styles.info}>fuck@mail.usf.edu</Text>
+          <Text style={styles.info}>sawanp@mail.usf.edu</Text>
           <Text style={styles.info}>(###)###-####</Text>
           <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
           <Text style={styles.lookingFor}>Looking For</Text>

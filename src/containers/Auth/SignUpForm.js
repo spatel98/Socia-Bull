@@ -13,12 +13,20 @@ export default class SignUpForm extends React.Component {
       lastName,
       phoneNumber,
       email,
+      date,
+      gender,
       password
     } = this.state
     this.setState({showLoading: true})
 
     var domain = email.replace(/.*@/, "").toLowerCase()
-    console.log("user domain: " + domain)
+    //console.log("user domain: " + domain)
+
+    if(firstName == '' && lastName == '' && phoneNumber == '' && email == '' && date == '' && gender=='' && password==''){
+      this.setState({ showLoading: false, errorMessage: "All fields empty"})
+      return 0
+    }
+
     if(domain !== 'mail.usf.edu') {
       this.setState({ showLoading: false, errorMessage: "Please use your USF Email." })
       return 0
@@ -35,6 +43,8 @@ export default class SignUpForm extends React.Component {
           lastName,
           phoneNumber,
           email,
+          date,
+          gender,
           netId: email.substring(0, email.indexOf("@")),
         })
         .then(function() {
