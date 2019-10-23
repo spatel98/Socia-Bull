@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Dimensions from 'Dimensions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ImagePicker from 'react-native-image-picker';
+import firebase from 'react-native-firebase';
+import defaultPic from '../../../assets/images/logo.png'
 import {
     Platform,
     StyleSheet,
@@ -17,10 +19,21 @@ import {
   } from 'react-native';
   import logo from "../../../assets/images/logo.png";
   import Dating from "./Dating";
+  import Study from "./Study";
   const options={
     title: 'Upload an Image',
     takePhotoButtonTitle: 'Take a photo',
     chooseFromLibraryButtonTitle: 'Choose a photo',
+  }
+  const DatingPreferences = () => {
+    return (
+      <Dating/>
+    )
+  }
+  const StudyPreferences = () => {
+    return (
+      <Study/>
+    )
   }
 export default class Home extends Component {
   constructor(props){
@@ -34,7 +47,7 @@ export default class Home extends Component {
     }
   }
   state = {
-    photo: logo,
+    pic: logo,
   }
   handleChoosePhoto = () => {
     ImagePicker.showImagePicker(options, (response) => {
@@ -62,17 +75,35 @@ export default class Home extends Component {
   }
   CheckboxDates(){
     this.setState({dates:!this.state.dates})
+    // firebase.firestore().collection("users").doc(user.uid).set({
+    //   dates,
+    // })
   }
   CheckboxFriends(){
     this.setState({friends:!this.state.friends})
+    // firebase.firestore().collection("users").doc(user.uid).set({
+    //   friends,
+    // })
+
   }
   CheckboxStudyBuddies(){
     this.setState({studybuddies:!this.state.studybuddies})
-  }
-  ImplementDates(){
-    if(dates){
-      return <Dating/>
-    }
+    
+    // firebase
+    // .auth()
+    // .then((user) => {
+    //   console.log('user after sign up:', user)
+    //   firebase.firestore().collection("users").doc(user.uid).set({
+    //     studybuddies,
+    //   })
+    //   .then(function() {
+    //     console.log("Document successfully written!");
+    //   })
+    //   .catch(function(error) {
+    //     console.error("Error writing document: ", error);
+    //   });
+    // })
+    //.catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
   }
   render(){
     const { photo } = this.state
@@ -95,10 +126,12 @@ export default class Home extends Component {
           onChange={()=>this.CheckboxDates()}/>
           <Text style={styles.textBox}>Friends</Text> 
           <CheckBox style={styles.boxes} value={this.state.friends}
-          onChange={()=>this.CheckboxDates()}/>
+          onChange={()=>this.CheckboxFriends()}/>
           <Text style={styles.textBox}>Study Buddies</Text> 
           <CheckBox style={styles.boxes} value={this.state.studybuddies}
           onChange={()=>this.CheckboxStudyBuddies()}/>
+          {(this.state.dates) && (<DatingPreferences/>)}
+          {(this.state.studybuddies) && (<StudyPreferences/>)}
         </View>
     </View>
   </View>
@@ -108,7 +141,6 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor:'#36485f',
-    height: 800,
   },
   textBox: {
     marginTop: 10,
@@ -132,6 +164,11 @@ const styles = StyleSheet.create({
   header:{
     backgroundColor: "#59cbbd",
     height:150,
+  },
+  boxes: {
+    marginTop: 10,
+    alignItems:'center',
+    color: '#fff',
   },
   avatar: {
     width: 130,

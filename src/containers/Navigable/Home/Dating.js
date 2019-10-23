@@ -35,17 +35,18 @@ export default class Dating extends Component {
   render(){
     return(
       <View> 
-          <Text style={styles.lookingFor}>Dating</Text>
-          <Text style={styles.lookingFor}>I Want</Text>
+          <Text style={styles.lookingFor}>Dating Preferences</Text>
+          <View style={styles.container}>
           <Text style={styles.textBox}>Men</Text> 
-          <CheckBox style={styles.boxes} value={this.state.men}
+          <CheckBox style={styles.boxes1} value={this.state.men}
           onChange={()=>this.CheckboxMen()}/>
-          <Text style={styles.textBox}>Women</Text> 
-          <CheckBox style={styles.boxes} value={this.state.women}
+          <Text style={styles.textBox2}>Women</Text> 
+          <CheckBox style={styles.boxes2} value={this.state.women}
           onChange={()=>this.CheckboxWomen()}/>
-          <Text style={styles.textBox}>Other</Text> 
-          <CheckBox style={styles.boxes} value={this.state.other}
+          <Text style={styles.textBox3}>Other</Text> 
+          <CheckBox style={styles.boxes3} value={this.state.other}
           onChange={()=>this.CheckboxOther()}/>
+          </View>
     </View>
     );
   }
@@ -53,97 +54,37 @@ export default class Dating extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor:'#36485f',
-    height: 800,
+    flexDirection: 'row',
   },
   textBox: {
-    marginTop: 10,
-    alignItems:'center',
+    marginTop: 5,
     color: '#fff',
   },
-  SelectImgButton: {
-    backgroundColor:'grey',
-    margin:10,
-    padding:10,
+  textBox2: {
+    marginTop: 5,
+    marginLeft: 20,
+    color: '#fff',
   },
-  Image: {
-    width: 200,
-    height: 200,
-    borderWidth: 1,
-    borderColor: 'black',
+  textBox3: {
+    marginTop: 5,
+    marginLeft: 20,
+    color: '#fff',
   },
-  SelectImage: {
-    color:"#fff"
+  boxes: {
+    color: '#fff',
   },
-  header:{
-    backgroundColor: "#59cbbd",
-    height:150,
+  boxes2: {
+    color: '#fff',
   },
-  avatar: {
-    width: 130,
-    height: 130,
-    borderRadius: 63,
-    borderWidth: 4,
-    borderColor: "white",
-    alignSelf:'center',
-    position: 'absolute',
-    zIndex: 106,
-  },
-  avatar2: {
-    width: 130,
-    height: 130,
-    borderRadius: 63,
-    borderWidth: 4,
-    borderColor: "white",
-    alignSelf:'center',
-    position: 'absolute',
-    marginTop:80,
-    zIndex: 105,
+  boxes3: {
+    color: '#fff',
   },
   lookingFor:{
     fontSize:20,
     color:"#FFFFFF",
     fontWeight:'300',
-  },
-  name:{
-    fontSize:22,
-    color:"#FFFFFF",
-    fontWeight:'600',
-  },
-  body:{
-    marginTop:50,
-  },
-  bodyContent: {
-    flex: 1,
-    alignItems: 'center',
-    padding:30,
-  },
-  name:{
-    fontSize:28,
-    color: "white",
-    fontWeight: "600"
-  },
-  info:{
-    fontSize:16,
-    color: "#59cbbd",
-    marginTop:10
-  },
-  description:{
-    fontSize:16,
-    color: "white",
-    marginTop:10,
-    textAlign: 'center',
-    marginBottom:50,
-  },
-  buttonContainer: {
-    marginTop:10,
-    height:45,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom:20,
-    width:250,
-    borderRadius:30,
-    backgroundColor: "#59cbbd",
+    alignSelf: 'center',
+    marginBottom: 10,
   },
 })
 
