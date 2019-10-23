@@ -53,7 +53,7 @@ export default class SignUpForm extends React.Component {
         .catch(function(error) {
           console.error("Error writing document: ", error);
         });
-        this.props.navigation.navigate('NavigationBar')
+        this.props.navigation.navigate('Login')
       })
       .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
 	}
