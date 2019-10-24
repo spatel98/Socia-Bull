@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, View, Picker, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
-import RNPickerSelect from 'react-native-picker-select';
 export default class SignUpForm extends React.Component {
 	state = { firstName: '', lastName: '', phoneNumber: '', email: '', date: '', gender: '', password: '', showLoading: false, errorMessage: null }
 	
@@ -24,6 +23,11 @@ export default class SignUpForm extends React.Component {
 
     if(firstName == '' && lastName == '' && phoneNumber == '' && email == '' && date == '' && gender=='' && password==''){
       this.setState({ showLoading: false, errorMessage: "All fields empty"})
+      return 0
+    }
+
+    if(gender==''){
+      this.setState({ showLoading: false, errorMessage: "Please pick a gender"})
       return 0
     }
 
@@ -87,16 +91,16 @@ export default class SignUpForm extends React.Component {
         />
         
         <DatePicker
-        style={styles.datePicker}
-        date={this.state.date}
-        mode="date"
-        placeholder="Birthdate"
-        format="YYYY-MM-DD"
-        minDate="1900-01-01"
-        maxDate="2001-10-18"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
+          style={styles.datePicker}
+          date={this.state.date}
+          mode="date"
+          placeholder="Birthdate"
+          format="YYYY-MM-DD"
+          minDate="1900-01-01"
+          maxDate="2001-10-18"
+          confirmBtnText="Confirm"
+          cancelBtnText="Cancel"
+          customStyles={{
           dateIcon: {
             position: 'absolute',
             left: 0,
@@ -105,26 +109,27 @@ export default class SignUpForm extends React.Component {
             marginBottom: 30,
           },
           dateInput: {
-            marginLeft: 36,
+            marginLeft: 20,
             borderWidth: 0,
           },
           dateText:{
             color: '#fff',
             justifyContent: 'flex-start'
           }
-        }}
-        onDateChange={date => this.setState({ date })}
-      />
-      <RNPickerSelect
-        style={styles.genderPicker}
-        
-        onValueChange={(gender) => this.setState({gender})}
-        items={[
-          { label: 'Male', value: 'm' },
-          { label: 'Female', value: 'f' },
-          { label: 'Other', value: 'o' },
-        ]}
-      />
+          }}
+          onDateChange={date => this.setState({ date })}
+        />
+
+        <Picker
+		      style={styles.genderPicker}
+		      selectedValue={this.state.gender}
+		      onValueChange={(itemValue,itemIndex) => this.setState({gender:itemValue})}>
+		      <Picker.Item label="Gender" value=""/>
+		      <Picker.Item label="Male" value="male" />
+		      <Picker.Item label="Female" value="female"/>
+          <Picker.Item label="Other" value="other"/>
+		    </Picker>
+
         <TextInput
           placeholder="Phone Number"
           placeholderTextColor='#fff'
@@ -171,15 +176,18 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch'
   },
   genderPicker: {
-    width: 300,
+    width: '106%',
+    color: '#fff',
     padding: 0,
-    marginRight: 36,
-    marginBottom: 25,
+    //height: 60,
+    //marginRight: 36,
+    marginBottom: 10,
     borderBottomColor: '#f8f8f8',
     borderBottomWidth: 1
   },
   datePicker: {
-    width: 240,
+    alignSelf: 'stretch',
+    width: 270,
     padding: 0,
     marginRight: 36,
     marginBottom: 25,
