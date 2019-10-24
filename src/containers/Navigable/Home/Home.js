@@ -17,9 +17,11 @@ import {
     TextInput,
     CheckBox,
   } from 'react-native';
-  import logo from "../../../assets/images/logo.png";
+  import logo from "../../../assets/images/click_to_add.png";
   import Dating from "./Dating";
   import Study from "./Study";
+  const DEVICE_WIDTH = Dimensions.get('window').width;
+  const DEVICE_HEIGHT = Dimensions.get('window').height;
   const options={
     title: 'Upload an Image',
     takePhotoButtonTitle: 'Take a photo',
@@ -44,6 +46,7 @@ export default class Home extends Component {
       dates: false,
       friends: false,
       studybuddies: false,
+      profileDescription: "",
     }
   }
   state = {
@@ -110,16 +113,19 @@ export default class Home extends Component {
     return(
       <View style={styles.container}>
       <View style={styles.header}></View>
+      <ImageBackground source={require('../../../assets/images/click_to_add.png')} borderRadius={63} style={styles.avatar3}>
       <TouchableOpacity style = {styles.avatar2}
               onPress={this.handleChoosePhoto}>
               <Image style={styles.avatar} source={this.state.avatarSource}/>
       </TouchableOpacity>
+      </ImageBackground>
       <View style={styles.body}>
         <View style={styles.bodyContent}>
           <Text style={styles.name}>FIRST LAST, AGE</Text>
           <Text style={styles.info}>sawanp@mail.usf.edu</Text>
           <Text style={styles.info}>(###)###-####</Text>
-          <Text style={styles.description}>Lorem ipsum dolor sit amet, saepe sapientem eu nam. Qui ne assum electram expetendis, omittam deseruisse consequuntur ius an,</Text>
+          <TextInput multiline style={styles.description} maxLength={150} placeholder={"Enter a description"} placeholderTextColor={"white"} 
+          onChangeText={text => this.state.profileDescription}></TextInput>
           <Text style={styles.lookingFor}>Looking For</Text>
           <Text style={styles.textBox}>Dates</Text> 
           <CheckBox style={styles.boxes} value={this.state.dates}
@@ -188,8 +194,18 @@ const styles = StyleSheet.create({
     borderColor: "white",
     alignSelf:'center',
     position: 'absolute',
-    marginTop:80,
     zIndex: 105,
+  },
+  avatar3: {
+    width: 130,
+    height: 130,
+    borderRadius: 63,
+    borderWidth: 4,
+    borderColor: "white",
+    alignSelf:'center',
+    position: 'absolute',
+    marginTop:80,
+    zIndex: 104,
   },
   lookingFor:{
     fontSize:20,
@@ -222,9 +238,13 @@ const styles = StyleSheet.create({
   description:{
     fontSize:16,
     color: "white",
-    marginTop:10,
+    marginTop:65,
     textAlign: 'center',
-    marginBottom:50,
+    borderWidth: 1,
+    marginBottom:65,
+    borderColor: 'white',
+    width: DEVICE_WIDTH-65,
+    height: DEVICE_WIDTH*0.5,
   },
   buttonContainer: {
     marginTop:10,
