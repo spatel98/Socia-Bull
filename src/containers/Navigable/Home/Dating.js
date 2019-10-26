@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Dimensions from 'Dimensions';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import firebase from 'react-native-firebase';
+import firebaseSDK from '../../../config/firebaseSDK';
 import {
     Platform,
     StyleSheet,
@@ -25,12 +27,40 @@ export default class Dating extends Component {
   }
   CheckboxMen(){
     this.setState({men:!this.state.men})
+
+    firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
+      menPref: this.state.men,
+    }, { merge: true })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
   }
   CheckboxWomen(){
     this.setState({women:!this.state.women})
+    firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
+      womenPref: this.state.women,
+    }, { merge: true })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
   }
   CheckboxOther(){
     this.setState({other:!this.state.other})
+    firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
+      otherPref: this.state.other,
+    }, { merge: true })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
   }
   render(){
     return(

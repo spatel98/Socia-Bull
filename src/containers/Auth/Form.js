@@ -52,6 +52,10 @@ export default class Form extends React.Component {
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
+        // .then(() => this.props.navigation.navigate('ChatForm', {
+        //   name: this.state.name,
+        //   email: this.state.email
+        // }))
         .then(() => this.props.navigation.navigate('NavigationBar'))
         .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
     }

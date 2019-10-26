@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack'
 
 import NavigationBar from '../containers/Navigable/Navigation'
 import Chats from '../containers/Navigable/Chats/Chats'
+import ChatForm from '../containers/Navigable/Chats/ChatForm'
 import Search from '../containers/Navigable/Search/Search'
 import Home from '../containers/Navigable/Home/Home'
 import LoginScreen from '../containers/Auth/LoginScreen'
@@ -23,6 +24,12 @@ const AppNavigator = createStackNavigator(
     },
     Chats: {
       screen: Chats,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    ChatForm: {
+      screen: ChatForm,
       navigationOptions: {
         header: null,
       },

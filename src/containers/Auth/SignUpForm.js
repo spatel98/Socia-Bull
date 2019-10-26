@@ -39,10 +39,10 @@ export default class SignUpForm extends React.Component {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then((user) => {
+      .then((cred) => {
         // Add user to collection
-        console.log('user after sign up:', user)
-        firebase.firestore().collection("users").doc(user.uid).set({
+        console.log('cred user uid: ', cred.user.uid)
+        firebase.firestore().collection("users").doc(cred.user.uid).set({
           firstName,
           lastName,
           phoneNumber,
