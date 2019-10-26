@@ -8,7 +8,7 @@ export default class Loading extends React.Component {
       this.props.navigation.navigate(user ? 'NavigationBar' : 'SignUp')
     })
 	}
-	
+
   render() {
     return (
       <View style={styles.container}>

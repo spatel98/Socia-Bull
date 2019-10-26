@@ -14,8 +14,10 @@ import {
 import Home from './Home/Home'
 import Search from './Search/Search'
 import Chats from './Chats/Chats'
+import ChatForm from './Chats/ChatForm'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 class HomeScreen extends Component {
+
   render(){
     return(
       <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}}>
