@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   StyleSheet,
@@ -11,33 +11,39 @@ import {
   TextInput,
   TouchableHighlight,
   Alert,
-  Dimensions
+  Dimensions,
+  YellowBox,
+  FlatList
 } from 'react-native';
 
+import _ from 'lodash'
 import {
 ListItem, Icon
 } from 'react-native-elements';
-import { FlatList } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import { Button } from 'react-native-paper';
+import firebase from 'react-native-firebase'
+import firebaseSDK from '../../../config/firebaseSDK';
+
+
 
 const msgs = [
   {
     name: 'Brynn',
     photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
-    username: 'brynn@mail.usf.edu',
+    email: 'brynn@mail.usf.edu',
     lastMessage: "Hey what's up?"
   },
   {
     name: 'Mario',
     photo: 'http://www.newdesignfile.com/postpic/2015/02/mario-128x128-icon_245367.png',
-    username: 'MarioMario@mail.usf.edu',
+    email: 'MarioMario@mail.usf.edu',
     lastMessage: 'Epic'
   },
   {
     name: 'Jeff',
     photo: 'https://findicons.com/files/icons/1606/128x128_icons_6/128/apple.png',
-    username: 'Jeff@mail.usf.edu',
+    email: 'Jeff@mail.usf.edu',
     lastMessage: 'Trying to study today?'
   }
   ]
@@ -78,17 +84,65 @@ const msgs = [
   ); 
 export default class Chats extends React.Component {
 
-  keyExtractor = (item, index) => index.toString()
-
-  state = 
-  {
+  constructor(props) {
+    super(props);
+    
+    this.state = { 
+    isFetching: false,
     addFriendVisible: false,
     search: '',
-    friendText: "Enter Friend's Username"
-  }
+    friendText: "Enter Friend's Username",
+    firstName: '',
+    lastName: '',
+    matches: [],
+    users: [],
+    ids: []
+    };
+
+    console.log(this.state.firstName)
+  };
+
+  componentDidMount() {
+    this.fetch();
+ }
+  
+  keyExtractor = (item, index) => index.toString()
+
+  fetch = () =>{
+  firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).onSnapshot((doc)=>{
+       if(doc.exists)
+       {
+        this.setState({matches: _.toArray(doc.data().matches)})
+       }
+      
+       
+      }).bind(this)
+
+      this.state.matches.forEach( val => {
+       firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
+
+       if(doc.exists)
+       {
+         if(!(this.state.ids.includes(val))){
+         
+        temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val}
+        this.state.users.push(temp)
+        this.state.ids.push(val)
+        }
+      }
+            
+      })
+      });
+
+      this.setState({isFetching: false})
+
+      
+
+      
+  };
 
   onRefresh = () => {
-
+    this.setState({isFetching: true}, () => this.fetch())
   }
 
   sendRequest = () => {
@@ -133,16 +187,18 @@ export default class Chats extends React.Component {
   }
 
   renderItem = ({ item }) => (
+
+   
     <ListItem
       title={item.name}
-      subtitle={item.lastMessage}
-      leftElement={
-        <Image
-        style={styles.imagestyle}
-        resizeMode="cover"
-        source={{uri: item.photo}}
-        />
-      }
+      subtitle={item.email}
+     // leftElement={
+      //  <Image
+       // style={styles.imagestyle}
+        //resizeMode="cover"
+        //source={{uri: item.photo}}
+        ///>
+      //}
 
       rightElement={
         <Icon name='book' color={'#36485f'} size={24} type ='material-community'/>
@@ -159,13 +215,13 @@ export default class Chats extends React.Component {
     return(
       <View>
         <Text style={styles.titlestyle}>
-          Chats
+         Chats
         </Text>
           <FlatList
           title = "Chats"
           keyExtractor = {this.keyExtractor}
-          data={msgs}
-          refreshing = {true}
+          data={this.state.users}
+          refreshing = {this.state.isFetching}
           renderItem={this.renderItem}
           onRefresh={this.onRefresh}
           ListHeaderComponent={this.addFriend}
