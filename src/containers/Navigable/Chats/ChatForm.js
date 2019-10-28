@@ -2,8 +2,15 @@ import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 
 import firebaseSDK from '../../../config/firebaseSDK';
-
+import firebase from 'react-native-firebase';
 export default class ChatForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstName: '',
+      email: '',
+    }
+  }
 
   static navigationOptions = ({ navigation }) => ({
     title: (navigation.state.params || {}).name || 'Chat!',
@@ -14,10 +21,19 @@ export default class ChatForm extends React.Component {
   };
 
   get user() {
+    console.log(firebaseSDK.shared.uid)
+    firebase
+      .firestore().collection("users").doc(firebaseSDK.shared.uid)
+      .onSnapshot(function (doc) {
+          this.state.firstName= doc.data().firstName;
+          this.state.email= doc.data().email;
+          console.log('current firstName: ', this.state.firstName)
+          console.log('current email: ', this.state.email)
+      }.bind(this))
     return {
-      name: this.props.navigation.state.params.name,
-      email: this.props.navigation.state.params.email,
-      //id: firebaseSDK.shared.uid,
+      firstName: this.state.firstName,
+      email: this.state.email,
+      id: firebaseSDK.shared.uid,
       _id: firebaseSDK.shared.uid,
     };
   }
