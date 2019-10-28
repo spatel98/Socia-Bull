@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import OptionsMenu from "react-native-options-menu";
+import firebase from 'react-native-firebase';
+import firebaseSDK from '../../../config/firebaseSDK';
 import {
     Platform,
     StyleSheet,
@@ -19,16 +21,41 @@ export default class Dating extends Component {
   constructor(props){
     super(props);
     this.state={
-        college: "undeclared",
+        college: "",
+        major: "",
       }
+  }
+  onChangeMajor = (text) => {
+    this.state.major = text;
+    firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
+      major: this.state.major,
+    }, { merge: true })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
+  }
+  onChangeCollege = (itemValue) =>{
+    this.setState({college: itemValue})
+    firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
+      college: itemValue,
+    }, { merge: true })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
   }
   render(){
     return(
       <View style={styles.container}> 
           <Picker
-		      style={styles.picker}
-		      selectedValue={this.state.college}
-		      onValueChange={(itemValue,itemIndex) => this.setState({college:itemValue})}>
+          style={styles.picker}
+          selectedValue={this.state.college}
+		      onValueChange={(itemValue, itemIndex) => (this.onChangeCollege(itemValue))}>
 		      <Picker.Item label="Select Department" value=""/>
 		      <Picker.Item label="College of Arts" value="College of Arts" />
 		      <Picker.Item label="College of Arts and Sciences" value="College of Arts and Sciences"/>
@@ -43,6 +70,16 @@ export default class Dating extends Component {
           <Picker.Item label="College of Pharmacy" value="College of Pharmacy"/>
           <Picker.Item label="College of Public Health" value="College of Public Health"/>
 		    </Picker>
+        <TextInput
+          placeholder="Major"
+          placeholderTextColor='#fff'
+          autoCapitalize="none"
+          style={styles.textInput}
+          underlineColorAndroid={'transparent'}
+          onChangeText={this.onChangeMajor}
+          maxLength={100}
+          multiline
+        />
     </View>
     );
   }
@@ -50,6 +87,14 @@ export default class Dating extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor:'#36485f',
+  },
+  textInput: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
+    color: '#fff',
+    borderBottomColor: '#f8f8f8',
+    borderBottomWidth: 1
   },
   picker: {
     width: 250,

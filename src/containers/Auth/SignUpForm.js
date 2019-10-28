@@ -75,6 +75,7 @@ export default class SignUpForm extends React.Component {
           placeholder="First Name"
           placeholderTextColor='#fff'
           autoCapitalize="none"
+          maxLength={30}
           style={styles.textInput}
           underlineColorAndroid={'transparent'}
           onChangeText={firstName => this.setState({ firstName })}
@@ -84,6 +85,7 @@ export default class SignUpForm extends React.Component {
           placeholder="Last Name"
           placeholderTextColor='#fff'
           autoCapitalize="none"
+          maxLength={30}
           style={styles.textInput}
           underlineColorAndroid={'transparent'}
           onChangeText={lastName => this.setState({ lastName })}
@@ -133,6 +135,7 @@ export default class SignUpForm extends React.Component {
         <TextInput
           placeholder="Phone Number"
           placeholderTextColor='#fff'
+          maxLength={15}
           autoCapitalize="none"
           style={styles.textInput}
           underlineColorAndroid={'transparent'}
@@ -143,6 +146,7 @@ export default class SignUpForm extends React.Component {
           placeholder="Email"
           placeholderTextColor='#fff'
           autoCapitalize="none"
+          maxLength={100}
           style={styles.textInput}
           underlineColorAndroid={'transparent'}
           onChangeText={email => this.setState({ email })}
@@ -153,6 +157,7 @@ export default class SignUpForm extends React.Component {
           placeholder="Password"
           placeholderTextColor='#fff'
           autoCapitalize="none"
+          maxLength={30}
           style={styles.textInput}
           underlineColorAndroid={'transparent'}
           onChangeText={password => this.setState({ password })}
