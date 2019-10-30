@@ -98,21 +98,22 @@ export default class Home extends Component {
   // }
 
   componentDidMount() {
+    console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
     firebase
       .firestore().collection("users").doc(firebaseSDK.shared.uid)
-      .onSnapshot(function (doc) {
-          this.state.firstName= doc.data().firstName;
-          this.state.lastName= doc.data().lastName;
-          this.state.bdate= doc.data().date;
-          this.state.email= doc.data().email;
-          this.state.gender= doc.data().gender;
-          this.state.netId= doc.data().netId;
-          this.state.phoneNumber= doc.data().phoneNumber;
-        // console.log('current data: ', doc.data())
-        // console.log('current firstName: ', doc.data().firstName)
-        // console.log('this.state firstName: ', this.state.firstName)
-        // console.log('current email: ', doc.data().email)
-      }.bind(this))
+      .onSnapshot((doc) => {
+        this.setState({
+          firstName: doc.data().firstName,
+          lastName: doc.data().lastName,
+          bdate: doc.data().date,
+          email: doc.data().email,
+          gender: doc.data().gender,
+          profileDescription: doc.data().description,
+          netId: doc.data().netId,
+          phoneNumber: doc.data().phoneNumber,
+        })
+        console.log('current uid: ', firebaseSDK.shared.uid)
+      }).bind(this)
   }
 
   handleChoosePhoto = () => {
