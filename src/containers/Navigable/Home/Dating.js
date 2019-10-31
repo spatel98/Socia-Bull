@@ -29,7 +29,7 @@ export default class Dating extends Component {
     this.setState({men:!this.state.men})
 
     firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
-      menPref: this.state.men,
+      menPref: !this.state.men,
     }, { merge: true })
     .then(function() {
       console.log("Document successfully written!");
@@ -41,7 +41,7 @@ export default class Dating extends Component {
   CheckboxWomen(){
     this.setState({women:!this.state.women})
     firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
-      womenPref: this.state.women,
+      womenPref: !this.state.women,
     }, { merge: true })
     .then(function() {
       console.log("Document successfully written!");
@@ -53,7 +53,7 @@ export default class Dating extends Component {
   CheckboxOther(){
     this.setState({other:!this.state.other})
     firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
-      otherPref: this.state.other,
+      otherPref: !this.state.other,
     }, { merge: true })
     .then(function() {
       console.log("Document successfully written!");

@@ -1,5 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import firebaseSDK from '../../../config/firebaseSDK';
+import firebase from 'react-native-firebase';
 import {
   StyleSheet,
   Text,
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
     padding: 5
   },
   card: {
-  
+
     borderRadius: 4,
     borderWidth: 2,
     borderColor: "#E8E8E8",
@@ -81,47 +83,70 @@ const people = [
     level: 'Senior',
     classes: ["Calculus I", "Intro to Architecture", "Intro to Humanities", "Foundations of Engineering"],
   }
-  ]
+]
 
 export default class Search extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      college: '',
+    }
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
+    firebase
+      .firestore().collection("users").doc(firebaseSDK.shared.uid)
+      .onSnapshot((doc) => {
+        console.log('doc data:', doc.data())
+        const data = doc.data()
+        this.setState({
+          firstName: data.college,
+        })
+        console.log('current uid: ', firebaseSDK.shared.uid)
+      })
+
+    var query= firebase.firestore().collection("users").where("college", "==", this.state.college)
+    console.log("query: ", query)
+  }
   
   renderClassNames(card) {
     return card['classes'].map((item, index) => <Text key={index} style={styles.smalltext}>{item}</Text>);
-}
+  }
 
-  render(){
-    return(
+  render() {
+    return (
       <View style={styles.container}>
-      <Swiper
+        <Swiper
           cards={people}
           verticalSwipe={false}
           infinite={true}
           cardVerticalMargin={60}
           renderCard={(card) => {
-              return (
-                  <View style={styles.card}>
-                    <Image
-                      style={styles.imagestyle}
-                      resizeMode="cover"
-                      source={{uri: card['photo']}}
-                    />
-                      <Text style={styles.text}>{card['name']}</Text>
-                      <Text style={{fontSize: 22, padding: 5,color: 'white'}}>{card['level']}</Text>
-                      <Text style={{fontSize: 21, padding: 5,color: 'white'}}>Classes in Common</Text>
-                      {this.renderClassNames(card)}
-                  </View>
-              )
+            return (
+              <View style={styles.card}>
+                <Image
+                  style={styles.imagestyle}
+                  resizeMode="cover"
+                  source={{ uri: card['photo'] }}
+                />
+                <Text style={styles.text}>{card['name']}</Text>
+                <Text style={{ fontSize: 22, padding: 5, color: 'white' }}>{card['level']}</Text>
+                <Text style={{ fontSize: 21, padding: 5, color: 'white' }}>Classes in Common</Text>
+                {this.renderClassNames(card)}
+              </View>
+            )
           }}
-          
-          onSwiped={(cardIndex) => {console.log(cardIndex)}}
-          onSwipedAll={() => {console.log('onSwipedAll')}}
+
+          onSwiped={(cardIndex) => { console.log(cardIndex) }}
+          onSwipedAll={() => { console.log('onSwipedAll') }}
           cardIndex={0}
           backgroundColor={'#59cbbd'}
           showSecondCard={true}
-          stackSize= {3}>
-         
-      </Swiper>
-  </View>
+          stackSize={3}>
+
+        </Swiper>
+      </View>
     );
   }
 }

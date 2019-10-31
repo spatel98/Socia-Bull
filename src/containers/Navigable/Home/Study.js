@@ -21,8 +21,8 @@ export default class Dating extends Component {
   constructor(props){
     super(props);
     this.state={
-        college: "",
-        major: "",
+      college: "",
+      major: "",
       }
   }
   onChangeMajor = (text) => {
@@ -53,8 +53,8 @@ export default class Dating extends Component {
     return(
       <View style={styles.container}> 
           <Picker
-          style={styles.picker}
-          selectedValue={this.state.college}
+		      style={styles.picker}
+		      selectedValue={this.state.college}
 		      onValueChange={(itemValue, itemIndex) => (this.onChangeCollege(itemValue))}>
 		      <Picker.Item label="Select Department" value=""/>
 		      <Picker.Item label="College of Arts" value="College of Arts" />
