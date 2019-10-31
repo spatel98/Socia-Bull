@@ -70,7 +70,7 @@ const msgs = [
       backgroundColor: 'white',
       alignItems: 'center',
       alignSelf: 'center',
-      padding: 22,
+   //   padding: 22,
       justifyContent: "center",
       borderRadius: 4,
       borderColor: "rgba(0, 0, 0, 0.1)"
@@ -107,10 +107,13 @@ export default class Chats extends React.Component {
   };
 
   componentDidMount() {
-   () => this.fetch();
+   this.onRefresh()
  }
   
   keyExtractor = (item, index) => index.toString()
+
+
+// fetches matches and requests arrays
 
   fetch = () =>{
   firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).onSnapshot((doc) =>{
@@ -130,7 +133,7 @@ export default class Chats extends React.Component {
        {
          if(!(this.state.ids.includes(val))){
          
-        temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val}
+        temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
         this.state.users.push(temp)
         this.state.ids.push(val)
         }
@@ -146,13 +149,13 @@ export default class Chats extends React.Component {
         {
           if(!(this.state.rids.includes(val))){
           
-         temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val}
+         temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
          this.state.requestsUsers.push(temp)
          this.state.rids.push(val)
          }
        }
              
-       }).bind(this);
+       })
        });
 
       this.setState({isFetching: false})   
@@ -164,24 +167,20 @@ export default class Chats extends React.Component {
 
   sendRequest = () => {
 
-    if(!this.state.search.includes("@mail.usf.edu"))
-    {
-      this.state.friendText = "Please enter a valid USF Email"
-      return;
-    }
-
-
-    temp =''
-
     // gets user with email
 
-    firebase.firestore().collection('users').where("email", "==", this.state.search)
+    firebase.firestore().collection('users').where("netId", "==", this.state.search)
     .get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
           // doc.data() is never undefined for query doc snapshots
         //    if(doc.exists)
               this.setState({idRequesting: doc.id})
-              temp = doc.id
+             
+              firebase.firestore().collection('users').doc(doc.id).set({
+                requests: firebase.firestore.FieldValue.arrayUnion(firebaseSDK.shared.uid)
+              }, { merge: true })
+
+
       });
 
       this.state.friendText = "Friend Request Sent";
@@ -192,13 +191,18 @@ export default class Chats extends React.Component {
       console.log("Error getting documents: ", error);
      
   });
+  }
 
-  // set command that is supposed to update array
- 
-  firebase.firestore().collection('users').doc(this.state.idRequesting).set({
-    requests: firebase.firestore.FieldValue.arrayUnion(this.state.idRequesting),
-    tests: 'epic'
-  })
+
+  declineRequest = () =>{
+
+  }
+
+  acceptRequest = () =>{
+    
+  }
+
+  removeRequest = () =>{
 
   }
   setAddFriendVisible(t) {
@@ -209,6 +213,7 @@ export default class Chats extends React.Component {
     {
       this.setState({search: ''})
       this.state.friendText = "Enter Friend's Username"
+      this.state.requesting = false
     }
   }
 
@@ -262,13 +267,13 @@ export default class Chats extends React.Component {
     <ListItem
       title={item.name}
       subtitle={item.email}
-     // leftElement={
-      //  <Image
-       // style={styles.imagestyle}
-        //resizeMode="cover"
-        //source={{uri: item.photo}}
-        ///>
-      //}
+      leftElement={
+        <Image
+        style={styles.imagestyle}
+        resizeMode="cover"
+        source={{uri: item.photo}}
+        />
+      }
 
       rightElement={
         <Icon name='book' color={'#36485f'} size={24} type ='material-community'/>
@@ -283,31 +288,33 @@ export default class Chats extends React.Component {
   renderRequests = ({ item }) => (
     <ListItem
       title={item.name}
-      subtitle={item.email}
-     // leftElement={
-      //  <Image
-       // style={styles.imagestyle}
-        //resizeMode="cover"
-        //source={{uri: item.photo}}
-        ///>
-      //}
+     // subtitle={item.email}
+      leftElement={
+        <Image
+        style={styles.imagestyle}
+        resizeMode="cover"
+        source={{uri: item.photo}}
+        />
+      }
+      
       rightElement={
-        <View>
-          <Icon name='minus-circle' color={'#36485f'} size={50} type ='material-community'/>
-          <Icon name='plus-circle' color={'#36485f'} size={50} type ='material-community'/>
+        <View style={{width: 72, height: 35, flexDirection: 'row', padding: 2}}>
+          <Icon name='minus-circle' color={'#36485f'} size={35} type ='material-community'/>
+          <Icon name='plus-circle' color={'#36485f'} size={35} type ='material-community'/>
 
           </View>
         
       }
-  
       bottomDivider
-      chevron
-      
     />
   )
 
 
   render(){
+
+
+
+
     return(
       <View>
         <Text style={styles.titlestyle}>
@@ -335,6 +342,8 @@ export default class Chats extends React.Component {
 
               <View style={styles.modalStyle}>
               <Text style= {styles.textstyle}>{this.state.friendText}</Text>
+
+              <View style={{flexDirection: 'row'}}>
               <TextInput 
               style={{borderColor: '#36485f', borderWidth: 1, maxWidth: 1000}}
               placeholder="Username"
@@ -344,13 +353,15 @@ export default class Chats extends React.Component {
               onSubmitEditing={()=>this.setState({requesting: true},() => this.sendRequest())}
               />
                 <Button onPress={()=>this.setState({requesting: true},()=>this.sendRequest())}
-                 loading={this.state.requesting}></Button>
+                 loading={this.state.requesting}> style={{width: 40, height: 40}}</Button>
            
-              
+           </View>
               <FlatList
           title = "Requests"
           keyExtractor = {this.keyExtractor}
           data={this.state.requestsUsers}
+          style={{flexGrow: 0, width: 300}}
+
          // refreshing = {this.state.isFetching}
           renderItem={this.renderRequests}
           //onRefresh={this.onRefresh}
