@@ -84,6 +84,7 @@ export default class Home extends Component {
     firebase
       .firestore().collection("users").doc(firebaseSDK.shared.uid)
       .onSnapshot((doc) => {
+
         console.log('doc data:', doc.data())
         const data = doc.data()
         this.setState({
