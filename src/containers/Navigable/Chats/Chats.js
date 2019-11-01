@@ -108,7 +108,13 @@ export default class Chats extends React.Component {
 
   componentDidMount() {
    this.onRefresh()
- }
+ 
+ this.createNewLists();
+
+ this.onRefresh()
+ 
+ this.createNewLists();
+  }
   
   keyExtractor = (item, index) => index.toString()
 
@@ -126,43 +132,51 @@ export default class Chats extends React.Component {
       
       }).bind(this)
 
-      this.state.matches.forEach( val => {
-       firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
-
-       if(doc.exists)
-       {
-         if(!(this.state.ids.includes(val))){
-         
-        temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
-        this.state.users.push(temp)
-        this.state.ids.push(val)
-        }
-      }
-            
-      })
-      });
-
-      this.state.requests.forEach( val => {
-        firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
- 
-        if(doc.exists)
-        {
-          if(!(this.state.rids.includes(val))){
-          
-         temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
-         this.state.requestsUsers.push(temp)
-         this.state.rids.push(val)
-         }
-       }
-             
-       })
-       });
+     
 
       this.setState({isFetching: false})   
   };
 
+
+createNewLists = () => {
+  this.state.matches.forEach( val => {
+    firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
+
+    if(doc.exists)
+    {
+      if(!(this.state.ids.includes(val))){
+      
+     temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
+     this.state.users.push(temp)
+     this.state.ids.push(val)
+     }
+   }
+         
+   })
+   });
+
+   this.state.requests.forEach( val => {
+     firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
+
+     if(doc.exists)
+     {
+       if(!(this.state.rids.includes(val))){
+       
+      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
+      this.state.requestsUsers.push(temp)
+      this.state.rids.push(val)
+      }
+    }
+          
+    })
+    });
+}
+
+
   onRefresh = () => {
     this.setState({isFetching: true}, () => this.fetch())
+
+    this.createNewLists()
   }
 
   sendRequest = () => {
@@ -193,18 +207,44 @@ export default class Chats extends React.Component {
   });
   }
 
+  acceptRequest = ( item ) => {
 
-  declineRequest = () =>{
+    firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).set({
+      matches: firebase.firestore.FieldValue.arrayUnion(item.id)
+    }, { merge: true })
 
+    firebase.firestore().collection('users').doc(item.id).set({
+      matches: firebase.firestore.FieldValue.arrayUnion(firebaseSDK.shared.uid)
+    }, { merge: true })
+
+    this.state.users.push(item)
+    this.state.userids.push(item.id)
+
+    this.removeRequest(item)
   }
 
-  acceptRequest = () =>{
+  removeRequest = ( item ) => {
+
+    firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).set({
+      requests: firebase.firestore.FieldValue.arrayRemove(item.id)
+    }, { merge: true })
+
+    temp = this.state.requests.filter((value, index, arr) => {
+      return value != item
+    })
+
+    tempU = this.state.requestsUsers.filter((value, index, arr) => {
+      return value != item
+    })
+
+    this.setState({requests: temp})
+
+    this.setState({requestsUsers : tempU})
+
+   // this.onRefresh()
     
   }
 
-  removeRequest = () =>{
-
-  }
   setAddFriendVisible(t) {
 
     this.setState({addFriendVisible: t});
@@ -222,6 +262,10 @@ export default class Chats extends React.Component {
   };
 
    addFriend = (props) => {
+
+   
+
+
 
     if(this.state.requestsUsers.length > 0)
     return (
@@ -299,8 +343,8 @@ export default class Chats extends React.Component {
       
       rightElement={
         <View style={{width: 72, height: 35, flexDirection: 'row', padding: 2}}>
-          <Icon name='minus-circle' color={'#36485f'} size={35} type ='material-community'/>
-          <Icon name='plus-circle' color={'#36485f'} size={35} type ='material-community'/>
+          <Icon name='minus-circle' color={'#36485f'} size={35} type ='material-community'onPress={()=> this.removeRequest(item)}/>
+          <Icon name='plus-circle' color={'#36485f'} size={35} type ='material-community' onPress={()=> this.acceptRequest(item)}/>
 
           </View>
         
@@ -312,14 +356,17 @@ export default class Chats extends React.Component {
 
   render(){
 
+if(this.state.requestsUsers.length != this.state.requests.length)
+{
 
+}
 
 
     return(
       <View>
         <Text style={styles.titlestyle}>
          {this.state.idRequesting},
-         {this.state.requestsUsers},
+         {this.state.requestsUsers.length},
          {this.state.requests}
         </Text>
           <FlatList
@@ -330,6 +377,7 @@ export default class Chats extends React.Component {
           renderItem={this.renderItem}
           onRefresh={()=>this.onRefresh()}
           ListHeaderComponent={this.addFriend}
+          extraData={this.state}
           />
         <Modal
           isVisible={this.state.addFriendVisible}
