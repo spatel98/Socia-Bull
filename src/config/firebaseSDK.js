@@ -35,7 +35,7 @@ class firebaseSDK {
 	get uid() {
 		return (firebase.auth().currentUser || {}).uid;
 	}
-
+	
 	get ref() {
 		return firebase.database().ref('messages');
 	}

@@ -6,12 +6,16 @@ import ImagePicker from 'react-native-image-picker';
 import firebase from 'react-native-firebase';
 import defaultPic from '../../../assets/images/logo.png'
 import firebaseSDK from '../../../config/firebaseSDK';
+
+import RNFetchBlob from 'react-native-fetch-blob'
+
 import {
   Platform,
   StyleSheet,
   Text,
   View,
   Image,
+  Alert,
   Button,
   ImageBackground,
   KeyboardAvoidingView,
@@ -39,6 +43,18 @@ const StudyPreferences = () => {
     <Study />
   )
 }
+
+const config = {
+  apiKey: "AIzaSyDENbbwxSuy-wbYEZ5OzMO2RvVjpPPGu_k",
+  authDomain: "socia-bull.firebaseio.com",
+  storageBucket: "soica-bull.appspot.com",
+}
+firebase.initializeApp(config)
+
+// const Blob = RNFetchBlob.polyfill.Blob;
+// const fs = RNFetchBlob.fs;
+// window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+// window.Blob = Blob;
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -56,51 +72,41 @@ export default class Home extends Component {
       friends: false,
       studybuddies: false,
       profileDescription: "",
+      profPic: '',
     }
   }
   state = {
     pic: logo,
   }
 
-  // onInitialize = () => {
-  //   firebase
-  //     .firestore().collection("users").doc(firebaseSDK.shared.uid)
-  //     .onSnapshot(function (doc) {
-  //       this.setState({
-  //         firstName: doc.data().firstName,
-  //         lastName: doc.data().lastName,
-  //         bdate: doc.data().date,
-  //         email: doc.data().email,
-  //         gender: doc.data().gender,
-  //         netId: doc.data().netId,
-  //         phoneNumber: doc.data().phoneNumber
-  //       })
-  //       console.log('current data: ', doc.data())
-  //     })
-  // }
+  componentDidMount() {
+    console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
+    firebase
+      .firestore().collection("users").doc(firebaseSDK.shared.uid)
+      .onSnapshot((doc) => {
 
-  // componentWillMount() {
-  //   firebase
-  //     .firestore().collection("users").doc('wWW9tc8KpdpBgCmffC3l')
-  //     .onSnapshot(function (doc) {
-  //       this.setState({
-  //         firstName: doc.data().firstName,
-  //         lastName: doc.data().lastName,
-  //         bdate: doc.data().date,
-  //         email: doc.data().email,
-  //         gender: doc.data().gender,
-  //         netId: doc.data().netId,
-  //         phoneNumber: doc.data().phoneNumber
-  //       })
-  //       console.log('current data: ', doc.data())
-  //     })
-
-  // }
+        console.log('doc data:', doc.data())
+        const data = doc.data()
+        this.setState({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          profileDescription: data.description,
+          dates: data.dates,
+          friends: data.friends,
+          studybuddies: data.studybuddies,
+          bdate: data.date,
+          email: data.email,
+          gender: data.gender,
+          netId: data.netId,
+          phoneNumber: data.phoneNumber,
+          profPic: data.profPic,
+        })
+      })
+  }
 
   handleChoosePhoto = () => {
     ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
-
+      
       if (response.didCancel) {
         console.log('User cancelled image picker');
       }
@@ -111,15 +117,89 @@ export default class Home extends Component {
       else {
         let source = { uri: response.uri };
 
-        // You can also display the image using data:
-        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        this.uploadImage(response, firebaseSDK.shared.uid)
+          .then((snapshot) => {
+            console.log('Uploaded a blob or file!');
+          })
+          .catch((error) => {
+            console.log('Error uploading a blob or file!');
+          });
 
         this.setState({
           avatarSource: source,
           pic: response.data
         });
+        console.log('avatarsource: ', this.state.avatarSource)
       }
     });
+  }
+
+  uploadImage = async (response, imageName) => {
+    const image= { //TO-DO: For IOS, use response.uri
+      image: response.uri.toString(),
+      path: response.path
+    }
+    
+    // Create the file metadata
+    var metadata = {
+      contentType: 'image/jpeg'
+    };
+
+    // Upload file and metadata to the object 'images/mountains.jpg'
+    var uploadTask = firebase.storage().ref().child('images/' + imageName).put(image.path, metadata)
+
+    console.log('uploadTask:', uploadTask)
+
+    // Listen for state changes, errors, and completion of the upload.
+    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+       (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+          case firebase.storage.TaskState.PAUSED: // or 'paused'
+            console.log('Upload is paused');
+            break;
+          case firebase.storage.TaskState.RUNNING: // or 'running'
+            console.log('Upload is running');
+            break;
+        }
+      }, (error) => {
+        console.log("error: ", error)
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+
+          case 'storage/unknown':
+            // Unknown error occurred, inspect error.serverResponse
+            break;
+        }
+      }, () => {
+        // Upload completed successfully, now we can get the download URL
+        uploadTask.ref.getDownloadURL().then((downloadURL) => {
+          console.log('File available at', downloadURL);
+
+          firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
+            profPic: downloadURL,
+          }, { merge: true })
+            .then(function () {
+              console.log('current uid: ', firebaseSDK.shared.uid);
+              console.log("Document successfully written!");
+              console.log('current uid: ', firebaseSDK.shared.uid);
+            })
+            .catch(function (error) {
+              console.error("Error writing document: ", error);
+            });
+        });
+      });
+      return 'hi'
   }
 
   onChangeDescription = (text) => {
@@ -127,40 +207,43 @@ export default class Home extends Component {
     firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
       description: this.state.profileDescription,
     }, { merge: true })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
+      .then(function () {
+        console.log('current uid: ', firebaseSDK.shared.uid);
+        console.log("Document successfully written!");
+        console.log('current uid: ', firebaseSDK.shared.uid);
+      })
+      .catch(function (error) {
+        console.error("Error writing document: ", error);
+      });
   }
 
   CheckboxDates() {
     this.setState({ dates: !this.state.dates })
 
     firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
-      dates: this.state.dates,
+      dates: !this.state.dates,
     }, { merge: true })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
+      .then(function () {
+        // console.log('current uid: ', firebaseSDK.shared.uid);
+        console.log("Document successfully written!");
+      })
+      .catch(function (error) {
+        console.error("Error writing document: ", error);
+      });
   }
 
   CheckboxFriends() {
     this.setState({ friends: !this.state.friends })
 
     firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
-      friends: this.state.friends,
+      friends: !this.state.friends,
     }, { merge: true })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
+      .then(function () {
+        console.log("Document successfully written!");
+      })
+      .catch(function (error) {
+        console.error("Error writing document: ", error);
+      });
 
   }
 
@@ -168,14 +251,14 @@ export default class Home extends Component {
     this.setState({ studybuddies: !this.state.studybuddies })
 
     firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
-      studybuddies: this.state.studybuddies,
+      studybuddies: !this.state.studybuddies,
     }, { merge: true })
-    .then(function() {
-      console.log("Document successfully written!");
-    })
-    .catch(function(error) {
-      console.error("Error writing document: ", error);
-    });
+      .then(function () {
+        console.log("Document successfully written!");
+      })
+      .catch(function (error) {
+        console.error("Error writing document: ", error);
+      });
   }
 
   render() {
