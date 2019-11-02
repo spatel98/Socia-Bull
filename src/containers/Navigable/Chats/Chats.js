@@ -107,13 +107,13 @@ export default class Chats extends React.Component {
   };
 
   componentDidMount() {
-   this.onRefresh()
  
- this.createNewLists();
+    this.onRefresh()
 
- this.onRefresh()
- 
- this.createNewLists();
+    this.createNewLists()
+
+    
+
   }
   
   keyExtractor = (item, index) => index.toString()
@@ -132,13 +132,18 @@ export default class Chats extends React.Component {
       
       }).bind(this)
 
-     
+     this.createNewLists()
 
       this.setState({isFetching: false})   
   };
 
 
 createNewLists = () => {
+
+
+  if(this.getLength(this.state.matches) > 0)
+  {
+
   this.state.matches.forEach( val => {
     firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
 
@@ -155,6 +160,10 @@ createNewLists = () => {
    })
    });
 
+  }
+
+  if(this.getLength(this.state.requests) > 0)
+  {
    this.state.requests.forEach( val => {
      firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
 
@@ -171,7 +180,7 @@ createNewLists = () => {
     })
     });
 }
-
+}
 
   onRefresh = () => {
     this.setState({isFetching: true}, () => this.fetch())
@@ -267,7 +276,7 @@ createNewLists = () => {
 
 
 
-    if(this.state.requestsUsers.length > 0)
+    if(this.getLength(this.state.requestsUsers) > 0)
     return (
       <ListItem
       title={"Add Friend"}
@@ -307,10 +316,26 @@ createNewLists = () => {
     );
   }
 
+
+
+  pressButton = ({item}, props) =>{
+    this.props.navigation.navigate('ChatForm', {
+         name: item.name,
+         email: item.email,
+         id: item.id,
+       });
+  }
+
+
+  getLength = (arr) =>{
+    return Object.keys(arr).length;
+  }
+
   renderItem = ({ item }) => (
     <ListItem
       title={item.name}
       subtitle={item.email}
+      onPress={() =>this.pressButton(item, this.props)}
       leftElement={
         <Image
         style={styles.imagestyle}
@@ -356,18 +381,15 @@ createNewLists = () => {
 
   render(){
 
-if(this.state.requestsUsers.length != this.state.requests.length)
-{
-
-}
-
+    if(this.getLength(this.state.users) != this.getLength(this.state.matches) || this.getLength(this.state.requestsUsers) != this.getLength(this.state.requests))
+    {
+      this.createNewLists()
+    }
 
     return(
       <View>
         <Text style={styles.titlestyle}>
-         {this.state.idRequesting},
-         {this.state.requestsUsers.length},
-         {this.state.requests}
+        Chats
         </Text>
           <FlatList
           title = "Chats"
