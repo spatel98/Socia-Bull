@@ -7,8 +7,6 @@ import firebase from 'react-native-firebase';
 import defaultPic from '../../../assets/images/logo.png'
 import firebaseSDK from '../../../config/firebaseSDK';
 
-import RNFetchBlob from 'react-native-fetch-blob'
-
 import {
   Platform,
   StyleSheet,
@@ -50,11 +48,6 @@ const config = {
   storageBucket: "soica-bull.appspot.com",
 }
 firebase.initializeApp(config)
-
-// const Blob = RNFetchBlob.polyfill.Blob;
-// const fs = RNFetchBlob.fs;
-// window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
-// window.Blob = Blob;
 export default class Home extends Component {
   constructor(props) {
     super(props);
