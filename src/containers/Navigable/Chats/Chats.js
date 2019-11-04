@@ -23,6 +23,7 @@ ListItem, Icon, Badge, Button
 import Modal from 'react-native-modal';
 import firebase from 'react-native-firebase'
 import firebaseSDK from '../../../config/firebaseSDK';
+import { thisTypeAnnotation } from '@babel/types';
 
 
 
@@ -100,7 +101,11 @@ export default class Chats extends React.Component {
     requestsUsers: [],
     rids: [],
     idRequesting: '',
-    requesting: false
+    requesting: false,
+    loaded: false,
+    otherName: '',
+    otherEmail: '',
+    otherID: '',
     };
 
    // console.log(this.state.firstName)
@@ -269,13 +274,7 @@ createNewLists = () => {
   updateSearch = search => {
     this.setState({ search: search });
   };
-
    addFriend = (props) => {
-
-   
-
-
-
     if(this.getLength(this.state.requestsUsers) > 0)
     return (
       <ListItem
@@ -318,11 +317,11 @@ createNewLists = () => {
 
 
 
-  pressButton = ({item}, props) =>{
+  pressButton = () =>{
     this.props.navigation.navigate('ChatForm', {
-         name: item.name,
-         email: item.email,
-         id: item.id,
+         name: this.state.otherName,
+         email: this.state.otherEmail,
+         id: this.state.otherID,
        });
   }
 
@@ -335,7 +334,7 @@ createNewLists = () => {
     <ListItem
       title={item.name}
       subtitle={item.email}
-      onPress={() =>this.pressButton(item, this.props)}
+      onPress={() =>{(this.state.otherName=item.name)&&(this.state.otherID=item.id)&&(this.state.otherEmail=item.email)&&(this.pressButton())}}//this.pressButton(item, this.props)}
       leftElement={
         <Image
         style={styles.imagestyle}
@@ -385,7 +384,13 @@ createNewLists = () => {
     {
       this.createNewLists()
     }
-
+    if(!this.state.loaded){
+      setTimeout(() => { this.onRefresh() }, 100);
+      setTimeout(() => { this.onRefresh() }, 250);
+      setTimeout(() => { this.onRefresh() }, 500);
+      setTimeout(() => { this.onRefresh() }, 2000);
+      this.state.loaded=true;
+    }
     return(
       <View>
         <Text style={styles.titlestyle}>

@@ -30,7 +30,7 @@ class ChatsScreen extends Component {
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <Chats />
+        <Chats navigation={this.props.navigation}/>
       </KeyboardAwareScrollView>
     );
   }

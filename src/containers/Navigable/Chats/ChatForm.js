@@ -1,6 +1,5 @@
 import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
-
 import firebaseSDK from '../../../config/firebaseSDK';
 import firebase from 'react-native-firebase';
 export default class ChatForm extends React.Component {
@@ -9,17 +8,17 @@ export default class ChatForm extends React.Component {
     this.state = {
       firstName: '',
       email: '',
+      otherName: this.props.navigation.getParam('name','none'),
+      otherEmail: this.props.navigation.getParam('email','none'),
+      otherID: this.props.navigation.getParam('id','none'),
     }
   }
-
   static navigationOptions = ({ navigation }) => ({
     title: (navigation.state.params || {}).name || 'Chat!',
   });
-
   state = {
     messages: [],
   };
-
   get user() {
     console.log(firebaseSDK.shared.uid)
     firebase
