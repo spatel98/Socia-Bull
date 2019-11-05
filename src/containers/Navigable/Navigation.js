@@ -21,7 +21,7 @@ class HomeScreen extends Component {
   render() {
     return (
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <Home />
+        <Home navigation={this.props.navigation}/>
       </KeyboardAwareScrollView>
     );
   }

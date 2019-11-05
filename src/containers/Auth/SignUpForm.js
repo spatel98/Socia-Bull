@@ -4,13 +4,12 @@ import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 export default class SignUpForm extends React.Component {
-	state = { firstName: '', lastName: '', phoneNumber: '', email: '', date: '', gender: '', password: '', showLoading: false, errorMessage: null }
+	state = { firstName: '', lastName: '', email: '', date: '', gender: '', password: '', showLoading: false, errorMessage: null }
 	
 	handleSignUp = () => {
     const {
       firstName,
       lastName,
-      phoneNumber,
       email,
       date,
       gender,
@@ -21,7 +20,7 @@ export default class SignUpForm extends React.Component {
     var domain = email.replace(/.*@/, "").toLowerCase()
     //console.log("user domain: " + domain)
 
-    if(firstName == '' && lastName == '' && phoneNumber == '' && email == '' && date == '' && gender=='' && password==''){
+    if(firstName == '' && lastName == '' && email == '' && date == '' && gender=='' && password==''){
       this.setState({ showLoading: false, errorMessage: "All fields empty"})
       return 0
     }
@@ -45,7 +44,6 @@ export default class SignUpForm extends React.Component {
         firebase.firestore().collection("users").doc(cred.user.uid).set({
           firstName,
           lastName,
-          phoneNumber,
           email,
           date,
           gender,
@@ -131,17 +129,7 @@ export default class SignUpForm extends React.Component {
 		      <Picker.Item label="Female" value="female"/>
           <Picker.Item label="Other" value="other"/>
 		    </Picker>
-
-        <TextInput
-          placeholder="Phone Number"
-          placeholderTextColor='#fff'
-          maxLength={15}
-          autoCapitalize="none"
-          style={styles.textInput}
-          underlineColorAndroid={'transparent'}
-          onChangeText={phoneNumber => this.setState({ phoneNumber })}
-          value={this.state.phoneNumber}
-        />
+        
         <TextInput
           placeholder="Email"
           placeholderTextColor='#fff'
