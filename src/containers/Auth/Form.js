@@ -2,9 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Dimensions from 'Dimensions';
 import firebase from 'react-native-firebase'
-
 import { Button } from 'react-native-elements';
-
 import {
   StyleSheet,
   Text,
@@ -15,11 +13,9 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-
 import UserInput from './UserInput';
 import usernameImg from '../../assets/images/username.png';
 import passwordImg from '../../assets/images/password.png';
-
 export default class Form extends React.Component {
     constructor() {
       super();
