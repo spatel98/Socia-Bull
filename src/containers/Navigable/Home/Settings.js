@@ -55,13 +55,16 @@ export default class Settings extends React.Component {
               dates: data.dates,
               friends: data.friends,
               studybuddies: data.studybuddies,
-              men: data.malePref,
+              men: data.menPref,
               women: data.womenPref,
               other: data.otherPref,
               college: data.college,
               major: data.major,
             })
           })
+      }
+      _navigateToScreen = () => {
+        const { navigation } = this.props.navigation.navigate('DeleteAccount');
       }
     CheckboxDates() {
         this.setState({ dates: !this.state.dates })
@@ -214,7 +217,7 @@ export default class Settings extends React.Component {
                         autoCapitalize="none"
                         style={styles.textInput}
                         underlineColorAndroid={'transparent'}
-                        value={this.state.major}
+                        defaultValue={this.state.major}
                         onChangeText={(text)=>this.onChangeMajor(text)}
                         maxLength={100}/></SectionRow>}
                     {(this.state.dates) && <SectionRow text="Dating">
@@ -237,6 +240,11 @@ export default class Settings extends React.Component {
 						    _value={this.state.other}
 						    _onValueChange={() => { this.CheckboxOther() }} />
                         </SectionRow>}
+               <SectionRow text="Account">
+                 <NavigateRow text="Delete Account" 
+                 iconName={'trash'}
+                 onPressCallback={() => { this._navigateToScreen()}}/>
+               </SectionRow>
 			</ReactNativeSettingsPage>
 		)
 	}

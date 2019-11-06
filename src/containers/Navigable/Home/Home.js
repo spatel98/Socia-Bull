@@ -22,6 +22,7 @@ import {
   CheckBox,
 } from 'react-native';
 import logo from "../../../assets/images/click_to_add.png";
+import wallpaper from "../../../assets/images/background-3.jpg"
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const options = {
@@ -54,12 +55,12 @@ export default class Home extends Component {
   state = {
     pic: logo,
   }
+
   componentDidMount() {
     console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
     firebase
       .firestore().collection("users").doc(firebaseSDK.shared.uid)
       .onSnapshot((doc) => {
-
         console.log('doc data:', doc.data())
         const data = doc.data()
         this.setState({
@@ -174,13 +175,22 @@ export default class Home extends Component {
       });
       return 'hi'
   }
-
+  signOutUser = async () => {
+    try {
+        await firebase.auth().signOut();
+        navigate('Login');
+        console.log("User signed out")
+    } catch (e) {
+        console.log(e);
+    }
+}
   render() {
     const { photo } = this.state
     // { () => this.onInitialize() }
     return (
       <View style={styles.container}>
-        <View style={styles.header}></View>
+        <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
+        <View style={styles.header}><ImageBackground source={require('../../../assets/images/background-8.jpg')} style={{width: '100%',height:'100%' }}></ImageBackground></View>
 
         <ImageBackground source={require('../../../assets/images/click_to_add.png')} borderRadius={63} style={styles.avatar3}>
           <TouchableOpacity style={styles.avatar2}
@@ -194,9 +204,13 @@ export default class Home extends Component {
             <Text style={styles.info}>{this.state.email}</Text>
             <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.navigation.navigate('Settings')}>
                 <Text>Settings</Text>  
-              </TouchableOpacity>        
+              </TouchableOpacity>     
+              <TouchableOpacity style={styles.buttonContainer} onPress={() => this.signOutUser()}>
+                <Text>Logout</Text>  
+              </TouchableOpacity>          
           </View>
         </View>
+        </ImageBackground>
       </View>
     );
   }
@@ -287,15 +301,16 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 16,
     color: "#59cbbd",
-    marginTop: 10
+    marginTop: 10,
+    marginBottom: 50,
   },
   buttonContainer: {
-    marginTop: 30,
+    marginTop: 15,
     height: 45,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 15,
     width: 250,
     borderRadius: 30,
     backgroundColor: "#59cbbd",
