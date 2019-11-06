@@ -8,9 +8,8 @@ export default class ChatForm extends React.Component {
     this.state = {
       firstName: '',
       email: '',
-      otherName: this.props.navigation.getParam('name','none'),
-      otherEmail: this.props.navigation.getParam('email','none'),
-      otherID: this.props.navigation.getParam('id','none'),
+      friendName: this.props.navigation.getParam('name','none'),
+      friendId: this.props.navigation.getParam('id','none'),
     }
   }
   static navigationOptions = ({ navigation }) => ({
@@ -20,20 +19,18 @@ export default class ChatForm extends React.Component {
     messages: [],
   };
   get user() {
-    console.log(firebaseSDK.shared.uid)
     firebase
       .firestore().collection("users").doc(firebaseSDK.shared.uid)
       .onSnapshot(function (doc) {
           this.state.firstName= doc.data().firstName;
           this.state.email= doc.data().email;
-          console.log('current firstName: ', this.state.firstName)
-          console.log('current email: ', this.state.email)
+          // console.log('current firstName: ', this.state.firstName)
+          // console.log('current email: ', this.state.email)
       }.bind(this))
     return {
       firstName: this.state.firstName,
       email: this.state.email,
       id: firebaseSDK.shared.uid,
-      _id: firebaseSDK.shared.uid,
     };
   }
 
@@ -48,6 +45,8 @@ export default class ChatForm extends React.Component {
   }
 
   componentDidMount() {
+    console.log('friendName: ', this.state.friendName)
+    console.log('otherId: ', this.state.friendId)
     firebaseSDK.shared.on(message =>
       this.setState(previousState => ({
         messages: GiftedChat.append(previousState.messages, message),
