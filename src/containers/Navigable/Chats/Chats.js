@@ -142,27 +142,29 @@ export default class Chats extends React.Component {
       this.setState({isFetching: false})   
   };
 
-
+//  consider using .where(matches arraycontains firebaseapi.shared.uid) dont need to make lists but is really redundant
 createNewLists = () => {
-
 
   if(this.getLength(this.state.matches) > 0)
   {
 
   this.state.matches.forEach( val => {
+    
+    if(!this.state.ids.includes(val))
+    { 
+    
     firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
 
     if(doc.exists)
     {
-      if(!(this.state.ids.includes(val))){
-      
      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
      this.state.users.push(temp)
      this.state.ids.push(val)
-     }
-   }
+    }
          
    })
+
+    }
    });
 
   }
@@ -170,19 +172,23 @@ createNewLists = () => {
   if(this.getLength(this.state.requests) > 0)
   {
    this.state.requests.forEach( val => {
+     
+    if(!this.state.rids.includes(val)){
+     
+    
      firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
 
      if(doc.exists)
      {
-       if(!(this.state.rids.includes(val))){
-       
+       //Todo switch to doc.data() no need for temp
       temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
       this.state.requestsUsers.push(temp)
       this.state.rids.push(val)
-      }
+      
     }
           
     })
+  }
     });
 }
 }
@@ -195,7 +201,7 @@ createNewLists = () => {
 
   sendRequest = () => {
 
-    // gets user with email
+    // gets user with netid
 
     firebase.firestore().collection('users').where("netId", "==", this.state.search)
     .get().then(querySnapshot => {
@@ -377,14 +383,10 @@ createNewLists = () => {
     />
   )
 
-
   render(){
 
-    if(this.getLength(this.state.users) != this.getLength(this.state.matches) || this.getLength(this.state.requestsUsers) != this.getLength(this.state.requests))
-    {
-      this.createNewLists()
-    }
     if(!this.state.loaded){
+      
       setTimeout(() => { this.onRefresh() }, 100);
       setTimeout(() => { this.onRefresh() }, 250);
       setTimeout(() => { this.onRefresh() }, 500);
