@@ -20,6 +20,7 @@ import {
   TextInput,
   CheckBox,
 } from 'react-native';
+import Home from './Home';
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 const config = {
@@ -29,36 +30,24 @@ const config = {
 }
 firebase.initializeApp(config)
 export default class DeleteAccount extends Component {
-    constructor() {
-        super();
-        this.state = {
-          showPass: true,
-          press: false,
-          email: "",
-          password: "",
-          errorMessage: null,
-          showLoading: false
-        };
-      }
   signOutUser = async () => {
-        try {
-            await firebase.auth().signOut();
-            navigate('Login');
-            console.log("User signed out")
-        } catch (e) {
-            console.log(e);
-        }
+    try {
+        await firebase.auth().signOut();
+        navigate('Login');
+        console.log("User signed out")
+    } catch (e) {
+        console.log(e);
     }
+}
   deleteAccount(){
     var user = firebase.auth().currentUser;
     user.delete().then(function() {
-    // User deleted.
+      firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).delete()
     }).catch(function(error) {
         Alert("Account deletion failed! You must sign in again to delete the account!")
+        this.signOutUser();
     // An error happened.
     });
-    firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).delete();
-    this.signOutUser();
   }
   render() {
     // { () => this.onInitialize() }

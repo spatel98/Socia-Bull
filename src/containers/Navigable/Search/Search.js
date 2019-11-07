@@ -100,9 +100,11 @@ export default class Search extends React.Component {
       .onSnapshot((doc) => {
         console.log('doc data:', doc.data())
         const data = doc.data()
-        this.setState({
-          firstName: data.college,
-        })
+        if(data!=undefined){
+          this.setState({
+            firstName: data.college,
+          })
+        }
         console.log('current uid: ', firebaseSDK.shared.uid)
       })
 

@@ -121,8 +121,6 @@ export default class Chats extends React.Component {
 
     this.createNewLists()
 
-    
-
   }
   
   keyExtractor = (item, index) => index.toString()

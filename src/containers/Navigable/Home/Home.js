@@ -6,7 +6,6 @@ import ImagePicker from 'react-native-image-picker';
 import firebase from 'react-native-firebase';
 import defaultPic from '../../../assets/images/logo.png'
 import firebaseSDK from '../../../config/firebaseSDK';
-
 import {
   Platform,
   StyleSheet,
@@ -22,15 +21,14 @@ import {
   CheckBox,
 } from 'react-native';
 import logo from "../../../assets/images/click_to_add.png";
-import wallpaper from "../../../assets/images/background-3.jpg"
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
+var today = new Date();
 const options = {
   title: 'Upload an Image',
   takePhotoButtonTitle: 'Take a photo',
   chooseFromLibraryButtonTitle: 'Choose a photo',
 }
-
 const config = {
   apiKey: "AIzaSyDENbbwxSuy-wbYEZ5OzMO2RvVjpPPGu_k",
   authDomain: "socia-bull.firebaseio.com",
@@ -48,14 +46,16 @@ export default class Home extends Component {
       gender: '',
       netId: '',
       avatarSource: null,
+      imageSource: null,
       pic: null,
       profPic: '',
+      age: '',
+      newPicked: false,
     }
   }
   state = {
     pic: logo,
   }
-
   componentDidMount() {
     console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
     firebase
@@ -63,21 +63,29 @@ export default class Home extends Component {
       .onSnapshot((doc) => {
         console.log('doc data:', doc.data())
         const data = doc.data()
-        this.setState({
-          firstName: data.firstName,
-          lastName: data.lastName,
-          dates: data.dates,
-          friends: data.friends,
-          studybuddies: data.studybuddies,
-          bdate: data.date,
-          email: data.email,
-          gender: data.gender,
-          netId: data.netId,
-          profPic: data.profPic,
-        })
+        if(data!=undefined){
+          this.setState({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            dates: data.dates,
+            friends: data.friends,
+            studybuddies: data.studybuddies,
+            bdate: new Date(data.date),
+            email: data.email,
+            gender: data.gender,
+            netId: data.netId,
+            profPic: data.profPic,
+            imageSource: data.profPic,
+          })
+          this.setState({age: today.getFullYear()-this.state.bdate.getFullYear()})
+          if(today.getMonth()<(this.state.bdate.getMonth()) || (today.getMonth()===(this.state.bdate.getMonth())&&today.getDate()<=this.state.bdate.getDate())){
+            this.setState({age: this.state.age-1})
+          }
+          this.setState({firstName: this.state.firstName.charAt(0).toUpperCase()+this.state.firstName.slice(1)})
+          this.setState({lastName: this.state.lastName.charAt(0).toUpperCase()+this.state.lastName.slice(1)})
+        }
       })
   }
-
   handleChoosePhoto = () => {
     ImagePicker.showImagePicker(options, (response) => {
       
@@ -101,7 +109,8 @@ export default class Home extends Component {
 
         this.setState({
           avatarSource: source,
-          pic: response.data
+          pic: response.data,
+          newPicked: true,
         });
         console.log('avatarsource: ', this.state.avatarSource)
       }
@@ -177,6 +186,20 @@ export default class Home extends Component {
   }
   signOutUser = async () => {
     try {
+      this.setState({
+          firstName: '',
+          lastName: '',
+          bdate: '',
+          email: '',
+          gender: '',
+          netId: '',
+          avatarSource: null,
+          imageSource: null,
+          pic: null,
+          profPic: '',
+          age: '',
+          newPicked: false,
+        })
         await firebase.auth().signOut();
         navigate('Login');
         console.log("User signed out")
@@ -191,18 +214,29 @@ export default class Home extends Component {
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
         <View style={styles.header}><ImageBackground source={require('../../../assets/images/background-8.jpg')} style={{width: '100%',height:'100%' }}></ImageBackground></View>
-
+        {(this.state.imageSource==null && !this.state.newPicked)&&(
         <ImageBackground source={require('../../../assets/images/click_to_add.png')} borderRadius={63} style={styles.avatar3}>
           <TouchableOpacity style={styles.avatar2}
             onPress={this.handleChoosePhoto}>
-            <Image style={styles.avatar} source={this.state.avatarSource} />
           </TouchableOpacity>
-        </ImageBackground>
+        </ImageBackground>)}
+        {(this.state.imageSource!=null && !this.state.newPicked)&&(
+        <ImageBackground source={{uri: this.state.imageSource}} borderRadius={63} style={styles.avatar3}>
+          <TouchableOpacity style={styles.avatar2}
+            onPress={this.handleChoosePhoto}>
+          </TouchableOpacity>
+        </ImageBackground>)}
+        {(this.state.newPicked)&&(
+        <ImageBackground source={this.state.avatarSource} borderRadius={63} style={styles.avatar3}>
+          <TouchableOpacity style={styles.avatar2}
+            onPress={this.handleChoosePhoto}>
+          </TouchableOpacity>
+        </ImageBackground>)}
         <View style={styles.body}>
           <View style={styles.bodyContent}>
-            <Text style={styles.name}>{this.state.firstName}</Text>
+            <Text style={styles.name}>{this.state.firstName} {this.state.lastName}, {this.state.age}</Text>
             <Text style={styles.info}>{this.state.email}</Text>
-            <TouchableOpacity style={styles.buttonContainer} onPress={() => this.props.navigation.navigate('Settings')}>
+            <TouchableOpacity style={styles.buttonContainer} onPress={() => (this.props.navigation.navigate('Settings'))}>
                 <Text>Settings</Text>  
               </TouchableOpacity>     
               <TouchableOpacity style={styles.buttonContainer} onPress={() => this.signOutUser()}>
@@ -253,18 +287,16 @@ const styles = StyleSheet.create({
     width: 130,
     height: 130,
     borderRadius: 63,
-    borderWidth: 4,
-    borderColor: "white",
+    borderWidth: 0,
     alignSelf: 'center',
     position: 'absolute',
     zIndex: 106,
   },
   avatar2: {
-    width: 130,
-    height: 130,
+    width: 125,
+    height: 125,
     borderRadius: 63,
-    borderWidth: 4,
-    borderColor: "white",
+    borderWidth: 0,
     alignSelf: 'center',
     position: 'absolute',
     zIndex: 105,
@@ -273,7 +305,7 @@ const styles = StyleSheet.create({
     width: 130,
     height: 130,
     borderRadius: 63,
-    borderWidth: 4,
+    borderWidth: 0,
     borderColor: "white",
     alignSelf: 'center',
     position: 'absolute',
