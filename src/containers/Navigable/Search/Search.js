@@ -145,9 +145,8 @@ export default class Search extends React.Component {
           if(doc.exists)
           {
 
-            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id))
+            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && !doc.data.swipedOn.includes(this.state.userID))
             {
-
             temp = doc.data()
             temp.id = doc.id
 
@@ -172,6 +171,9 @@ export default class Search extends React.Component {
 
     tempc = this.state.cards[cardIndex]
 
+    if(tempc == null)
+      return
+
     if(tempc.id == null)
       return
 
@@ -186,14 +188,18 @@ export default class Search extends React.Component {
 
   onSwipeRight = (cardIndex) =>{
 
+    
+
     card = this.state.cards[cardIndex]
+
+    if(card == null)
+      return
 
     console.log(card.id)
     
     if(card.id == null)
       return
    
-
       // if this person swiped on me and i swiped on them afterwards
     if(this.state.swipedOn.includes(card.id))
     {
@@ -258,7 +264,7 @@ export default class Search extends React.Component {
           }}
 
           onSwiped={(cardIndex) => { console.log(cardIndex) }}
-          onSwipedLeft={() => this.onSwipeLeft()}
+          onSwipedLeft={(cardIndex) => this.onSwipeLeft(cardIndex)}
           onSwipedRight={(cardIndex) => this.onSwipeRight(cardIndex)}
           onSwipedAll={() => { console.log('onSwipedAll') }}
           backgroundColor={'#59cbbd'}
