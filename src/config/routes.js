@@ -13,6 +13,7 @@ import SignUpScreen from '../containers/Auth/SignUpScreen'
 import ForgotPassword from '../containers/Auth/ForgotPassword'
 import Loading from '../containers/Auth/Loading'
 import Settings from '../containers/Navigable/Home/Settings'
+import DeleteAccount from '../containers/Navigable/Home/DeleteAccount'
 
 
 const AppNavigator = createStackNavigator(
@@ -23,10 +24,15 @@ const AppNavigator = createStackNavigator(
         header: null,
       },
     },
+    DeleteAccount:{
+      screen: DeleteAccount,
+      navigationOptions: {
+        header:null,
+      }
+    },
     Settings: {
       screen: Settings,
       navigationOption: {
-        header:null,
       },
     },
     Chats: {

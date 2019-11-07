@@ -50,27 +50,29 @@ const msgs = [
 
   const styles = StyleSheet.create({
     container: {
-      padding: 8,
-      backgroundColor: "#ffffff",
+      backgroundColor: "#36485f",
     },
     imagestyle: {
       width: 50,
       height: 50,
-      borderRadius: 50 / 2
-
+      borderRadius: 50 / 2,
+      backgroundColor: '#36485f',
     },
     textstyle:{
-      paddingBottom: 8
+      paddingBottom: 8,
+      backgroundColor: 'white',
     },
     titlestyle:{
     textAlign: 'center',
+    backgroundColor: '#36485f',
     paddingBottom: 4,
-    fontSize: 20
+    fontSize: 20,
+    color: 'white',
     },
     modalStyle:{
-      backgroundColor: 'white',
       alignItems: 'center',
       alignSelf: 'center',
+      backgroundColor: 'white',
    //   padding: 22,
       justifyContent: "center",
       borderRadius: 4,
@@ -79,6 +81,7 @@ const msgs = [
     },
     innerContainer: {
       alignItems: 'center',
+      backgroundColor: '#36485f',
     },
   }
   ); 
@@ -377,7 +380,6 @@ createNewLists = () => {
           <Icon name='plus-circle' color={'#36485f'} size={35} type ='material-community' onPress={()=> this.acceptRequest(item)}/>
 
           </View>
-        
       }
       bottomDivider
     />
@@ -394,10 +396,10 @@ createNewLists = () => {
       this.state.loaded=true;
     }
     return(
-      <View>
+      <View style={styles.container}>
+        <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
         <Text style={styles.titlestyle}>
-        Chats
-        </Text>
+        Chats</Text>
           <FlatList
           title = "Chats"
           keyExtractor = {this.keyExtractor}
@@ -415,7 +417,7 @@ createNewLists = () => {
           animationOut="slideOutRight"
           animationInTiming={400}
           animationOutTiming={400}
-          > 
+          >
 
               <View style={styles.modalStyle}>
               <Text style= {styles.textstyle}>{this.state.friendText}</Text>
@@ -431,7 +433,6 @@ createNewLists = () => {
               />
                 <Button onPress={()=>this.setState({requesting: true},()=>this.sendRequest())}
                  loading={this.state.requesting}> style={{width: 40, height: 40}}</Button>
-           
            </View>
               <FlatList
           title = "Requests"
@@ -447,10 +448,9 @@ createNewLists = () => {
           <Text>No Pending Friend Requests
           </Text>}
           />
-
-           
               </View>
         </Modal>
+        </ImageBackground>
       </View>
     )
   }
