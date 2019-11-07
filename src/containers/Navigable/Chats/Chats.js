@@ -118,10 +118,6 @@ export default class Chats extends React.Component {
  
     this.onRefresh()
 
-    this.createNewLists()
-
-    
-
   }
   
   keyExtractor = (item, index) => index.toString()
@@ -138,7 +134,7 @@ export default class Chats extends React.Component {
       
        }
       
-      }).bind(this)
+      })
 
      this.createNewLists()
 
@@ -160,9 +156,13 @@ createNewLists = () => {
 
     if(doc.exists)
     {
-     temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
+      if(!this.state.ids.includes(val))
+    {
+     temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data().profPic}
      this.state.users.push(temp)
      this.state.ids.push(val)
+    }
+     
     }
          
    })
@@ -183,11 +183,11 @@ createNewLists = () => {
 
      if(doc.exists)
      {
-       //Todo switch to doc.data() no need for temp
-      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
+      if(!this.state.rids.includes(val)){
+      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data().profPic}
       this.state.requestsUsers.push(temp)
       this.state.rids.push(val)
-      
+      }
     }
           
     })
@@ -241,7 +241,7 @@ createNewLists = () => {
     }, { merge: true })
 
     this.state.users.push(item)
-    this.state.userids.push(item.id)
+    this.state.ids.push(item.id)
 
     this.removeRequest(item)
   }

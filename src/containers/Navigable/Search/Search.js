@@ -138,6 +138,8 @@ export default class Search extends React.Component {
     })
 */
   
+
+
     firebase.firestore().collection('users')
       .get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
