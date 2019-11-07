@@ -48,23 +48,30 @@ export default class Settings extends React.Component {
         firebase
           .firestore().collection("users").doc(firebaseSDK.shared.uid)
           .onSnapshot((doc) => {
-    
             console.log('doc data:', doc.data())
             const data = doc.data()
-            this.setState({
-              dates: data.dates,
-              friends: data.friends,
-              studybuddies: data.studybuddies,
-              men: data.menPref,
-              women: data.womenPref,
-              other: data.otherPref,
-              college: data.college,
-              major: data.major,
-            })
+            if(data!=undefined){
+              this.setState({
+                dates: data.dates,
+                friends: data.friends,
+                studybuddies: data.studybuddies,
+                men: data.menPref,
+                women: data.womenPref,
+                other: data.otherPref,
+                college: data.college,
+                major: data.major,
+              })
+            }
           })
       }
       _navigateToScreen = () => {
         const { navigation } = this.props.navigation.navigate('DeleteAccount');
+      }
+      _navigateToPrivacy= () => {
+        const { navigation } = this.props.navigation.navigate('PrivacyPolicy');
+      }
+      _navigateToTerms = () => {
+        const { navigation } = this.props.navigation.navigate('TermsOfService');
       }
     CheckboxDates() {
         this.setState({ dates: !this.state.dates })
@@ -241,6 +248,12 @@ export default class Settings extends React.Component {
 						    _onValueChange={() => { this.CheckboxOther() }} />
                         </SectionRow>}
                <SectionRow text="Account">
+                 <NavigateRow text="Terms of Service" 
+                 iconName={'paperclip'}
+                 onPressCallback={() => { this._navigateToTerms()}}/>
+                 <NavigateRow text="Privacy Policy" 
+                 iconName={'user-secret'}
+                 onPressCallback={() => { this._navigateToPrivacy()}}/>
                  <NavigateRow text="Delete Account" 
                  iconName={'trash'}
                  onPressCallback={() => { this._navigateToScreen()}}/>

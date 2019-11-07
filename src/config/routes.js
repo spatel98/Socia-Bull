@@ -14,6 +14,8 @@ import ForgotPassword from '../containers/Auth/ForgotPassword'
 import Loading from '../containers/Auth/Loading'
 import Settings from '../containers/Navigable/Home/Settings'
 import DeleteAccount from '../containers/Navigable/Home/DeleteAccount'
+import TermsAndConditions from '../containers/Navigable/Home/TermsOfService'
+import PrivacyPolicy from '../containers/Navigable/Home/PrivacyPolicy'
 
 
 const AppNavigator = createStackNavigator(
@@ -22,6 +24,18 @@ const AppNavigator = createStackNavigator(
       screen: NavigationBar,
       navigationOptions:{
         header: null,
+      },
+    },
+    TermsOfService:{
+      screen: TermsAndConditions,
+      navigationOptions: {
+        header:null,
+      },
+    },
+    PrivacyPolicy:{
+      screen: PrivacyPolicy,
+      navigationOptions: {
+        header:null,
       },
     },
     DeleteAccount:{

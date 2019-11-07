@@ -3,9 +3,12 @@ import { StyleSheet, Text, TextInput, View, Picker, TouchableOpacity } from 'rea
 import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
+const date = new Date().getDate();
+const month = new Date().getMonth()+1;
+const year = new Date().getFullYear()-18;
+const max = year+"-"+month+"-"+date;
 export default class SignUpForm extends React.Component {
 	state = { firstName: '', lastName: '', email: '', date: '', gender: '', password: '', showLoading: false, errorMessage: null }
-	
 	handleSignUp = () => {
     const {
       firstName,
@@ -55,11 +58,15 @@ export default class SignUpForm extends React.Component {
         .catch(function(error) {
           console.error("Error writing document: ", error);
         });
+        //this.doSendEmailVerification();
         this.props.navigation.navigate('Login')
       })
       .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
 	}
-	
+  // doSendEmailVerification = () =>
+  // this.auth.currentUser.sendEmailVerification({
+  //   url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
+  // });
   render() {
     const { showLoading } = this.state
     return (
@@ -97,7 +104,7 @@ export default class SignUpForm extends React.Component {
           placeholder="Birthdate"
           format="YYYY-MM-DD"
           minDate="1900-01-01"
-          maxDate="2001-10-18"
+          maxDate={max}
           confirmBtnText="Confirm"
           cancelBtnText="Cancel"
           customStyles={{
