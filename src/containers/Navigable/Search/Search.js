@@ -321,7 +321,7 @@ export default class Search extends React.Component {
                 <Text style={{ fontSize: 22, padding: 5, color: 'white' }}>{card.id}</Text>
                
                 <Text style={{ fontSize: 21, padding: 5, color: 'white' }}>Seeking</Text>
-                <Text style={{ fontSize: 20, padding: 5, color: 'white' }}>{card.dates ? 'Dates ': ''}{card.friends ? 'Friends ': ''}{card.studybuddies ? 'Study Buddy': ''}</Text>
+                <Text style={{ fontSize: 20, padding: 5, color: 'white' }}>{card.dates && this.state.dates ? 'Dates ': ''}{card.friends && this.state.friends ? 'Friends ': ''}{card.studybuddies && this.state.studybuddies ? 'Study Buddy': ''}</Text>
                 
            
 
