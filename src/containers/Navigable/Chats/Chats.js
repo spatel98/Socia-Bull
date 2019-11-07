@@ -134,11 +134,14 @@ export default class Chats extends React.Component {
       
        }
       
+
+       this.createNewLists()
+       this.setState({isFetching: false})
       })
 
-     this.createNewLists()
+    
 
-      this.setState({isFetching: false})   
+        
   };
 
 //  consider using .where(matches arraycontains firebaseapi.shared.uid) dont need to make lists but is really redundant
@@ -201,7 +204,6 @@ createNewLists = () => {
   onRefresh = () => {
     this.setState({isFetching: true}, () => this.fetch())
 
-    this.createNewLists()
   }
 
   sendRequest = () => {
@@ -389,12 +391,7 @@ createNewLists = () => {
   )
 
   render(){
-
-    if(!this.state.loaded){      
-      setTimeout(() => { this.onRefresh() }, 50);
-      setTimeout(() => { this.onRefresh() }, 150);
-      this.state.loaded=true;
-    }
+    
     return(
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
