@@ -32,8 +32,15 @@ const AppNavigator = createStackNavigator(
     },
     Settings: {
       screen: Settings,
-      navigationOption: {
+      navigationOptions:{
+        
       },
+      // navigationOption: () => ({
+      //   title: 'A',
+      //   headerMode: screen,
+      //   headerTitleStyle :{color: '#000',textAlign: 'center',alignSelf:'center'},
+      //   headerBackTitle: null,
+      // }),
     },
     Chats: {
       screen: Chats,
@@ -44,7 +51,7 @@ const AppNavigator = createStackNavigator(
     ChatForm: {
       screen: ChatForm,
       navigationOptions: {
-        header: null,
+        
       },
     },
     Search: {

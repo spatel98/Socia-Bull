@@ -31,6 +31,11 @@ const config = {
   }
   firebase.initializeApp(config)
 export default class Settings extends React.Component {
+
+  static navigationOptions = () => ({
+    title: 'Settings',
+  });
+
 	// TODO: implement your navigationOptions
 	state = {
         dates: false,
