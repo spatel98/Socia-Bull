@@ -161,6 +161,7 @@ createNewLists = () => {
      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data().profPic}
      this.state.users.push(temp)
      this.state.ids.push(val)
+     this.setState({users: this.state.users})
     }
      
     }
@@ -187,6 +188,7 @@ createNewLists = () => {
       temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data().profPic}
       this.state.requestsUsers.push(temp)
       this.state.rids.push(val)
+      this.setState({requestsusers: this.state.requestsUsers})
       }
     }
           
@@ -283,6 +285,8 @@ createNewLists = () => {
   updateSearch = search => {
     this.setState({ search: search });
   };
+
+  
    addFriend = (props) => {
     if(this.getLength(this.state.requestsUsers) > 0)
     return (
@@ -323,8 +327,6 @@ createNewLists = () => {
       ></ListItem>
     );
   }
-
-
 
   pressButton = () =>{
     this.props.navigation.navigate('ChatForm', {
@@ -387,12 +389,8 @@ createNewLists = () => {
 
   render(){
 
-    if(!this.state.loaded){
-      
-      setTimeout(() => { this.onRefresh() }, 100);
-      setTimeout(() => { this.onRefresh() }, 250);
-      setTimeout(() => { this.onRefresh() }, 500);
-      setTimeout(() => { this.onRefresh() }, 2000);
+    if(!this.state.loaded){      
+      setTimeout(() => { this.onRefresh() }, 10);
       this.state.loaded=true;
     }
     return(

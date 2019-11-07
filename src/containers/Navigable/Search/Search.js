@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator
 } from 'react-native';
 
 import _ from 'lodash'
@@ -98,10 +99,18 @@ export default class Search extends React.Component {
       cardIndex: 0,
       ids:[],
       ignore:[],
+      addedIds: [],
       studybuddies: false,
-      womenPref: false
+      womenPref: false,
+      loading: true,
+      noCards: false,
+      dates: false,
+      friends: false,
+      
     }
   }
+
+  //Call these functions in component.update after setting doUpdate true in component unmount
 
   componentDidMount() {
     console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
@@ -116,58 +125,96 @@ export default class Search extends React.Component {
           matches: _.toArray(data.matches),
           ignore: _.toArray(data.ignore),
           studybuddies: data.studybuddies,
-          userID: doc.id
-
+          dates: data.dates,
+          friends: data.friends,
+          userID: doc.id,
+          addedIds: [],
+          
         })
         console.log('current uid: ', firebaseSDK.shared.uid)
       })
-
-      // Add users that swiped on this user to stack first
-
-      /*
-      firebase.firestore().collection('users').where("swipedOn", "array-contains", firebaseSDK.shared.uid)
+        
+  //  if(this.state.studybuddies)
+   /* {
+    firebase.firestore().collection('users').where("college", "==", this.state.college)
       .get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
 
-          this.state.cards.push(doc.data())
-
-          console.log(doc.data)
-               
+          if(doc.exists)
+          {
+            tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
+            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
+            {
+            temp = doc.data()
+            temp.id = doc.id
+            this.state.cards.push(temp)
+            this.state.addedIds.push(temp.id)
+            this.setState({cards: this.state.cards})
+            }
+          }
         });
   
     })
+  }
 */
-  
 
 
+ // if(this.state.dates)
+  //{
     firebase.firestore().collection('users')
       .get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
 
           if(doc.exists)
           {
-
-            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && !doc.data.swipedOn.includes(this.state.userID))
+            tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
+            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
             {
             temp = doc.data()
             temp.id = doc.id
-
-            console.log(temp)
-
             this.state.cards.push(temp)
+            this.state.addedIds.push(temp.id)
+            this.setState({cards: this.state.cards})
             }
           }
         });
   
     })
+  //}
+/*
+  if(this.state.friends)
+  {
+    firebase.firestore().collection('users').where("friends", "==", true)
+      .get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
 
+          if(doc.exists)
+          {
+            tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
+            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
+            {
+            temp = doc.data()
+            temp.id = doc.id
+            this.state.cards.push(temp)
+            this.state.addedIds.push(temp.id)
+            this.setState({cards: this.state.cards})
+            }
+          }
+        });
+  
+    })
+  }*/
+
+    this.setState({loading: false})
   }
   /*
   renderClassNames(card) {
     return card['classes'].map((item, index) => <Text key={index} style={styles.smalltext}>{item}</Text>);
   }
   */
-
+ getLength = (arr) =>{
+  return Object.keys(arr).length;
+}
 
   onSwipeLeft = (cardIndex) =>{
 
@@ -189,8 +236,6 @@ export default class Search extends React.Component {
   }
 
   onSwipeRight = (cardIndex) =>{
-
-    
 
     card = this.state.cards[cardIndex]
 
@@ -225,8 +270,24 @@ export default class Search extends React.Component {
   }
 
   render() {
-    return (
+
+   if(this.state.loading)
+   return(
+   <View style={styles.container}>
+     <ActivityIndicator size="large" animating={this.state.loading}/>
+   </View>)
+
+   if(this.state.cards.length <= 0 || this.state.noCards)
+   return(
+    <View style={styles.container}>
+    <Text>Please come back later for more matches</Text>
+    <Text>{this.state.cards.length}</Text>
+  </View>)
+   
+
+      return (
       <View style={styles.container}>
+        
         <Swiper
           ref={swiper => {
             this.swiper = swiper
@@ -252,13 +313,16 @@ export default class Search extends React.Component {
                 <Image
                   style={styles.imagestyle}
                   resizeMode="cover"
-                  source={{ uri: 'https://gix.uw.edu/wp-content/uploads/2019/01/photo-placeholder.jpeg' }}
+                  source={card.profPic == null ? {uri: 'https://gix.uw.edu/wp-content/uploads/2019/01/photo-placeholder.jpeg' } : {uri: card.profPic}}
                 />
 
                 <Text style={styles.text}>{card['firstName']}</Text>
-                
+                <Text style={styles.text}>{card.college}</Text>
                 <Text style={{ fontSize: 22, padding: 5, color: 'white' }}>{card.id}</Text>
-                <Text style={{ fontSize: 21, padding: 5, color: 'white' }}>Classes in Common</Text>
+               
+                <Text style={{ fontSize: 21, padding: 5, color: 'white' }}>Seeking</Text>
+                <Text style={{ fontSize: 20, padding: 5, color: 'white' }}>{card.dates ? 'Dates ': ''}{card.friends ? 'Friends ': ''}{card.studybuddies ? 'Study Buddy': ''}</Text>
+                
            
 
               </View>
@@ -268,7 +332,7 @@ export default class Search extends React.Component {
           onSwiped={(cardIndex) => { console.log(cardIndex) }}
           onSwipedLeft={(cardIndex) => this.onSwipeLeft(cardIndex)}
           onSwipedRight={(cardIndex) => this.onSwipeRight(cardIndex)}
-          onSwipedAll={() => { console.log('onSwipedAll') }}
+          onSwipedAll={() => { this.setState({noCards: true}) }}
           backgroundColor={'#59cbbd'}
           showSecondCard={true}
           stackSize={3}>
