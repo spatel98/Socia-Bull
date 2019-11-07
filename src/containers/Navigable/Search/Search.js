@@ -122,6 +122,7 @@ export default class Search extends React.Component {
       .onSnapshot((doc) => {
         console.log('doc data:', doc.data())
         const data = doc.data()
+        if(data!=undefined){
         this.setState({
           college: data.college,
           gender: data.gender,
@@ -141,6 +142,8 @@ export default class Search extends React.Component {
         console.log('current uid:  after state set', firebaseSDK.shared.uid)
        //Have to call this here to ensure that state has been set from firebase
         this.getMatches()
+        }
+        console.log('current uid: ', firebaseSDK.shared.uid)
       })
   }
 

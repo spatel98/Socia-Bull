@@ -109,6 +109,7 @@ export default class Chats extends React.Component {
     otherName: '',
     otherEmail: '',
     otherID: '',
+    messages: [],
     };
 
    // console.log(this.state.firstName)
@@ -244,6 +245,16 @@ createNewLists = () => {
       matches: firebase.firestore.FieldValue.arrayUnion(firebaseSDK.shared.uid)
     }, { merge: true })
 
+    firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).collection('chats').doc(item.id).set({
+      messages: this.state.messages
+    }, { merge: true })
+
+    firebase.firestore().collection('users').doc(item.id).collection('chats').doc(firebaseSDK.shared.uid).set({
+      messages: this.state.messages
+    }, { merge: true })
+
+    console.log('this.state.users: ', this.state.users)
+    console.log('this.state.ids: ', this.state.ids)
     this.state.users.push(item)
     this.state.ids.push(item.id)
 
@@ -333,7 +344,6 @@ createNewLists = () => {
   pressButton = () =>{
     this.props.navigation.navigate('ChatForm', {
          name: this.state.otherName,
-         email: this.state.otherEmail,
          id: this.state.otherID,
        });
   }
@@ -391,7 +401,7 @@ createNewLists = () => {
   )
 
   render(){
-    
+
     return(
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>

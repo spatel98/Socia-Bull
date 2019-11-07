@@ -54,6 +54,7 @@ export default class Form extends React.Component {
         // }))
         .then(() => this.props.navigation.navigate('NavigationBar'))
         .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
+      setTimeout(() => { this.setState({showLoading: false}) }, 2000);
     }
 
     handleTextChange1 = (email) => {
