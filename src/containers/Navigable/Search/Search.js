@@ -131,11 +131,15 @@ export default class Search extends React.Component {
           addedIds: [],
           
         })
-        console.log('current uid: ', firebaseSDK.shared.uid)
+        console.log('current uid:  after state set', firebaseSDK.shared.uid)
       })
+
+      console.log("hm", this.state.studybuddies)
         
-  //  if(this.state.studybuddies)
-   /* {
+    if(this.state.studybuddies)
+    {
+
+      console.log("EPIC")
     firebase.firestore().collection('users').where("college", "==", this.state.college)
       .get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -145,6 +149,7 @@ export default class Search extends React.Component {
             tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
             if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
             {
+              console.log("studybuddy")
             temp = doc.data()
             temp.id = doc.id
             this.state.cards.push(temp)
@@ -156,11 +161,9 @@ export default class Search extends React.Component {
   
     })
   }
-*/
 
-
- // if(this.state.dates)
-  //{
+  if(this.state.dates)
+  {
     firebase.firestore().collection('users')
       .get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -180,7 +183,7 @@ export default class Search extends React.Component {
         });
   
     })
-  //}
+  }
 /*
   if(this.state.friends)
   {
@@ -283,8 +286,7 @@ export default class Search extends React.Component {
     <Text>Please come back later for more matches</Text>
     <Text>{this.state.cards.length}</Text>
   </View>)
-   
-
+  
       return (
       <View style={styles.container}>
         
@@ -313,7 +315,7 @@ export default class Search extends React.Component {
                 <Image
                   style={styles.imagestyle}
                   resizeMode="cover"
-                  source={card.profPic == null ? {uri: 'https://gix.uw.edu/wp-content/uploads/2019/01/photo-placeholder.jpeg' } : {uri: card.profPic}}
+                  source={card.profPic == null ? require('../../../assets/images/click_to_add.png') : {uri: card.profPic}}
                 />
 
                 <Text style={styles.text}>{card['firstName']}</Text>

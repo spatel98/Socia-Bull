@@ -350,8 +350,8 @@ createNewLists = () => {
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={{uri: item.photo}}
-        />
+       source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.photo}}
+              />
       }
 
       rightElement={
@@ -372,7 +372,8 @@ createNewLists = () => {
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={{uri: item.photo}}
+        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.photo}}
+       
         />
       }
       
@@ -390,7 +391,8 @@ createNewLists = () => {
   render(){
 
     if(!this.state.loaded){      
-      setTimeout(() => { this.onRefresh() }, 10);
+      setTimeout(() => { this.onRefresh() }, 50);
+      setTimeout(() => { this.onRefresh() }, 150);
       this.state.loaded=true;
     }
     return(
