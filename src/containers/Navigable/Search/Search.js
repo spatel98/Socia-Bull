@@ -101,11 +101,14 @@ export default class Search extends React.Component {
       ignore:[],
       addedIds: [],
       studybuddies: false,
+      menPref: false,
       womenPref: false,
+      otherPref: false,
       loading: true,
       noCards: false,
       dates: false,
       friends: false,
+      doneSetup: true
       
     }
   }
@@ -121,25 +124,42 @@ export default class Search extends React.Component {
         const data = doc.data()
         this.setState({
           college: data.college,
+          gender: data.gender,
           swipedOn: _.toArray(data.swipedOn),
           matches: _.toArray(data.matches),
           ignore: _.toArray(data.ignore),
-          studybuddies: data.studybuddies,
-          dates: data.dates,
-          friends: data.friends,
+          studybuddies: data.studybuddies == null ? false : data.studybuddies,
+          dates: data.dates == null ? false : data.dates,
+          friends: data.friends == null ? false : data.friends,
           userID: doc.id,
           addedIds: [],
+          menPref: data.menPref == null ? false : data.menPref,
+          womenPref: data.womenPref == null ? false : data.womenPref,
+          otherPref: data.otherPref == null ? false : data.otherPref
           
         })
         console.log('current uid:  after state set', firebaseSDK.shared.uid)
+       //Have to call this here to ensure that state has been set from firebase
+        this.getMatches()
       })
+  }
 
-      console.log("hm", this.state.studybuddies)
-        
+  
+  getMatches = () =>
+  {
+
+    if(!this.state.studybuddies && !this.state.friends && !this.state.dates)
+    {
+      this.setState({loading: false, doneSetup: false})
+
+      return
+    }
+
+
     if(this.state.studybuddies)
     {
 
-      console.log("EPIC")
+     // console.log("EPIC")
     firebase.firestore().collection('users').where("college", "==", this.state.college)
       .get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -149,7 +169,7 @@ export default class Search extends React.Component {
             tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
             if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
             {
-              console.log("studybuddy")
+             // console.log("studybuddy")
             temp = doc.data()
             temp.id = doc.id
             this.state.cards.push(temp)
@@ -158,33 +178,65 @@ export default class Search extends React.Component {
             }
           }
         });
-  
+
+        if(!this.state.dates && !this.state.friends)
+        {
+          this.setState({loading: false})
+        }
     })
   }
 
   if(this.state.dates)
   {
-    firebase.firestore().collection('users')
+
+    genderarray = []
+
+    if(this.state.menPref)
+    {
+      genderarray.push('male')
+    }
+
+    if(this.state.womenPref)
+    {
+      genderarray.push('female')
+    }
+
+    if(this.state.otherPref)
+    {
+      genderarray.push('other')
+    }
+    firebase.firestore().collection('users').where('gender', 'in', genderarray)
       .get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
 
           if(doc.exists)
           {
-            tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
-            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
+
+            if(this.isValidGenderForDoc(doc, this.state.gender))
             {
-            temp = doc.data()
-            temp.id = doc.id
-            this.state.cards.push(temp)
-            this.state.addedIds.push(temp.id)
-            this.setState({cards: this.state.cards})
+              tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
+              
+              if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
+              {
+              temp = doc.data()
+              temp.id = doc.id
+              this.state.cards.push(temp)
+              this.state.addedIds.push(temp.id)
+              this.setState({cards: this.state.cards})
+              }
             }
           }
         });
   
-    })
+        if(!this.state.friends)
+        {
+          this.setState({loading: false})
+        }
+
+    }
+    )
   }
-/*
+
   if(this.state.friends)
   {
     firebase.firestore().collection('users').where("friends", "==", true)
@@ -204,17 +256,46 @@ export default class Search extends React.Component {
             }
           }
         });
-  
+        this.setState({loading: false})
     })
-  }*/
+  }
 
-    this.setState({loading: false})
+
+    
   }
-  /*
-  renderClassNames(card) {
-    return card['classes'].map((item, index) => <Text key={index} style={styles.smalltext}>{item}</Text>);
+
+
+  isValidGenderForDoc = (doc, gender)=>{
+  
+    if(doc.data().menPref != null)
+    {
+      if(doc.data().menPref)
+      {
+        return gender == 'male'
+      }
+       
+    }
+
+    if(doc.data().womenPref != null)
+    {
+      if(doc.data().womenPref)
+      {
+        return gender == 'female'
+      }
+    }
+
+    if(doc.data().otherPref != null)
+    {
+      if(doc.data().otherPref)
+      {
+        return gender == 'other'
+      }
+    }
+
+
+    return false
   }
-  */
+
  getLength = (arr) =>{
   return Object.keys(arr).length;
 }
@@ -280,12 +361,23 @@ export default class Search extends React.Component {
      <ActivityIndicator size="large" animating={this.state.loading}/>
    </View>)
 
+if(!this.state.doneSetup)
+{
+return(<View style={styles.container}>
+    <Text>You haven't set any search settings. Go to the profile page to configure your search settings</Text>
+</View>)
+}
+
+
+
    if(this.state.cards.length <= 0 || this.state.noCards)
    return(
     <View style={styles.container}>
     <Text>Please come back later for more matches</Text>
     <Text>{this.state.cards.length}</Text>
   </View>)
+
+ 
   
       return (
       <View style={styles.container}>
