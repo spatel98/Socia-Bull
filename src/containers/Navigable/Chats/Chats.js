@@ -25,29 +25,6 @@ import firebase from 'react-native-firebase'
 import firebaseSDK from '../../../config/firebaseSDK';
 import { thisTypeAnnotation } from '@babel/types';
 
-
-
-const msgs = [
-  {
-    name: 'Brynn',
-    photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
-    email: 'brynn@mail.usf.edu',
-    lastMessage: "Hey what's up?"
-  },
-  {
-    name: 'Mario',
-    photo: 'http://www.newdesignfile.com/postpic/2015/02/mario-128x128-icon_245367.png',
-    email: 'MarioMario@mail.usf.edu',
-    lastMessage: 'Epic'
-  },
-  {
-    name: 'Jeff',
-    photo: 'https://findicons.com/files/icons/1606/128x128_icons_6/128/apple.png',
-    email: 'Jeff@mail.usf.edu',
-    lastMessage: 'Trying to study today?'
-  }
-  ]
-
   const styles = StyleSheet.create({
     container: {
       backgroundColor: "#36485f",
@@ -119,6 +96,8 @@ export default class Chats extends React.Component {
  
     this.onRefresh()
 
+    this.createNewLists()
+
   }
   
   keyExtractor = (item, index) => index.toString()
@@ -135,27 +114,21 @@ export default class Chats extends React.Component {
       
        }
       
+      }).bind(this)
 
-       this.createNewLists()
-       this.setState({isFetching: false})
-      })
+     this.createNewLists()
 
-    
-
-        
+      this.setState({isFetching: false})   
   };
 
-//  consider using .where(matches arraycontains firebaseapi.shared.uid) dont need to make lists but is really redundant
+
 createNewLists = () => {
+
 
   if(this.getLength(this.state.matches) > 0)
   {
 
   this.state.matches.forEach( val => {
-    
-    if(!this.state.ids.includes(val))
-    { 
-    
     firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
 
     if(doc.exists)
@@ -165,14 +138,10 @@ createNewLists = () => {
      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data().profPic == null ? require('../../../assets/images/click_to_add.png') : doc.data().profPic}
      this.state.users.push(temp)
      this.state.ids.push(val)
-     this.setState({users: this.state.users})
-    }
-     
-    }
+     }
+   }
          
    })
-
-    }
    });
 
   }
@@ -180,24 +149,19 @@ createNewLists = () => {
   if(this.getLength(this.state.requests) > 0)
   {
    this.state.requests.forEach( val => {
-     
-    if(!this.state.rids.includes(val)){
-     
-    
      firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
 
      if(doc.exists)
      {
-      if(!this.state.rids.includes(val)){
-      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data.profPic == null ? require('../../../assets/images/click_to_add.png') : doc.data().profPic}
+       if(!(this.state.rids.includes(val))){
+       
+      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
       this.state.requestsUsers.push(temp)
       this.state.rids.push(val)
-      this.setState({requestsusers: this.state.requestsUsers})
       }
     }
           
     })
-  }
     });
 }
 }
@@ -205,11 +169,12 @@ createNewLists = () => {
   onRefresh = () => {
     this.setState({isFetching: true}, () => this.fetch())
 
+    this.createNewLists()
   }
 
   sendRequest = () => {
 
-    // gets user with netid
+    // gets user with email
 
     firebase.firestore().collection('users').where("netId", "==", this.state.search)
     .get().then(querySnapshot => {
@@ -298,12 +263,12 @@ createNewLists = () => {
   updateSearch = search => {
     this.setState({ search: search });
   };
-
-  
    addFriend = (props) => {
     if(this.getLength(this.state.requestsUsers) > 0)
     return (
       <ListItem
+      // style = {[{backgroundColor: (this.state.selectedItem[index]) ? 'green' : 'white'}]}
+      containerStyle = {{backgroundColor: '#59cbbd'}}
       title={"Add Friend"}
       
       leftElement={
@@ -341,6 +306,8 @@ createNewLists = () => {
     );
   }
 
+
+
   pressButton = () =>{
     this.props.navigation.navigate('ChatForm', {
          name: this.state.otherName,
@@ -362,8 +329,8 @@ createNewLists = () => {
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-       source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.photo}}
-              />
+        source={{uri: item.photo}}
+        />
       }
 
       rightElement={
@@ -384,8 +351,7 @@ createNewLists = () => {
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.photo}}
-       
+        source={{uri: item.photo}}
         />
       }
       
@@ -400,13 +366,25 @@ createNewLists = () => {
     />
   )
 
+
   render(){
 
+    if(this.getLength(this.state.users) != this.getLength(this.state.matches) || this.getLength(this.state.requestsUsers) != this.getLength(this.state.requests))
+    {
+      this.createNewLists()
+    }
+    if(!this.state.loaded){
+      setTimeout(() => { this.onRefresh() }, 100);
+      setTimeout(() => { this.onRefresh() }, 250);
+      setTimeout(() => { this.onRefresh() }, 500);
+      setTimeout(() => { this.onRefresh() }, 2000);
+      this.state.loaded=true;
+    }
     return(
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
-        <Text style={styles.titlestyle}>
-        Chats</Text>
+        {/* <Text style={styles.titlestyle}>
+        Chats</Text> */}
           <FlatList
           title = "Chats"
           keyExtractor = {this.keyExtractor}
