@@ -29,8 +29,8 @@ export default class ChatForm extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     title: (navigation.state.params || {}).name || 'Chat!',
     headerTintColor: '#fff',
-    headerLeft: null,
-    gesturesEnabled: false,
+    //headerLeft: null,
+    //gesturesEnabled: false,
     headerStyle: {
       backgroundColor: '#005e48'
       //backgroundColor: '#59cbbd'
@@ -74,7 +74,8 @@ export default class ChatForm extends React.Component {
     //console.log('newMessages1: ', this.state.newMessages)
     this.state.newMessages = this.state.messages
     //console.log('newMessages2: ', this.state.newMessages)
-    this.state.newMessages.push(messages[0])
+    messages[0].createdAt = new Date().toString()
+    this.state.newMessages.unshift(messages[0])
     //console.log('newMessages3: ', this.state.newMessages)
     this.setState({
       messages: this.state.newMessages
@@ -132,7 +133,7 @@ export default class ChatForm extends React.Component {
             onSend={messages => this.onSend(messages)}
             scrollToBottom = {true}
             user={this.user}
-            inverted = {false}
+            //inverted = {false}
             renderBubble={this.renderBubble}
           />
         </ImageBackground>
@@ -151,13 +152,13 @@ export default class ChatForm extends React.Component {
     console.log('friendName: ', this.state.friendName)
     console.log('otherId: ', this.state.friendId)
 
-    firebase.firestore()
+    this.unsubscribe = firebase.firestore()
       .collection('users')
       .doc(firebaseSDK.shared.uid)
       .collection('chats')
       .doc(this.state.friendId)
       //.orderBy('createdAt', 'desc')
-      .onSnapshot(function(doc) {
+      .onSnapshot((doc) => {
         //console.log("data: ", doc.data().messages)
         if(doc.exists)
         {
@@ -165,7 +166,7 @@ export default class ChatForm extends React.Component {
           //this.state.messages = _.toArray(doc.data().messages)
         }
       
-      }.bind(this));        
+      });        
     
     // this.setState((previousState) => {
     //   return {
@@ -176,7 +177,10 @@ export default class ChatForm extends React.Component {
   }
 
   componentWillUnmount() {
+    // if(this.props.forwardRef.current !== null)
+    //   this.props.forwardRef.current.scrollToEnd({animated});
     //firebaseSDK.shared.off();
+    this.unsubscribe();
   }
 
 
