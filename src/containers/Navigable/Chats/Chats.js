@@ -162,7 +162,7 @@ createNewLists = () => {
     {
       if(!this.state.ids.includes(val))
     {
-     temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data.profPic == null ? require('../../../assets/images/click_to_add.png') : doc.data().profPic}
+     temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data().profPic == null ? require('../../../assets/images/click_to_add.png') : doc.data().profPic}
      this.state.users.push(temp)
      this.state.ids.push(val)
      this.setState({users: this.state.users})
