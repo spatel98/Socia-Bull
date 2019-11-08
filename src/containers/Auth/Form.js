@@ -16,7 +16,6 @@ import {
 import UserInput from './UserInput';
 import usernameImg from '../../assets/images/username.png';
 import passwordImg from '../../assets/images/password.png';
-import undefined from 'firebase/empty-import';
 export default class Form extends React.Component {
     constructor() {
       super();
@@ -31,7 +30,31 @@ export default class Form extends React.Component {
         otherError: false,
       };
     }
-  
+    finalizeLogin = () => {
+      if(!this.state.otherError){
+        var user = firebase.auth().currentUser;
+        if(this.state.otherError==false){
+        if (firebase.auth().currentUser.emailVerified) {
+          this.props.navigation.navigate('NavigationBar')
+          setTimeout(() => { this.setState({ showLoading: false }) }, 2000);
+        }
+        else {
+          if (this.state.sentEmail) {
+            this.setState({ errorMessage: 'A second verification email has already been sent! If you do not see it, please check your spam folder. If you have already clicked the link, please wait a minute before attempting again.' });
+            this.setState({ showLoading: false })
+          }
+          else {
+            user.sendEmailVerification().then(function () {
+              console.log("email verification sent to user");
+            })
+            this.setState({ errorMessage: "Email not verified. A new verification email has been sent!" });
+            this.setState({ showLoading: false })
+            this.setState({ sentEmail: true })
+          }
+        }
+      }
+      }
+    }
     showPass = () => {
       this.state.press === false
         ? this.setState({showPass: false, press: true})
@@ -47,32 +70,11 @@ export default class Form extends React.Component {
         this.setState({ showLoading: false, errorMessage: "All fields empty"})
         return 0
       }
-
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
-        .catch(error => this.setState({ showLoading: false, errorMessage: error.message, otherError: true }))
-        var user = firebase.auth().currentUser;
-        if(this.state.otherError==false){
-          if (firebase.auth().currentUser.emailVerified) {
-            this.props.navigation.navigate('NavigationBar')
-            setTimeout(() => { this.setState({ showLoading: false }) }, 2000);
-          }
-          else {
-            if (this.state.sentEmail) {
-              this.setState({ errorMessage: 'A second verification email has already been sent! If you do not see it, please check your spam folder. If you have already clicked the link, please wait a minute before attempting again.' });
-              this.setState({ showLoading: false })
-            }
-            else {
-              user.sendEmailVerification().then(function () {
-                console.log("email verification sent to user");
-              })
-              this.setState({ errorMessage: "Email not verified. A new verification email has been sent!" });
-              this.setState({ showLoading: false })
-              this.setState({ sentEmail: true })
-            }
-          }
-        }
+        .catch(error => this.setState({ otherError: true, showLoading: false, errorMessage: error.message}))
+        .then(()=>{this.finalizeLogin()})
         // .then(() => this.props.navigation.navigate('ChatForm', {
         //   name: this.state.name,
         //   email: this.state.email
