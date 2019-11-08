@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  ImageBackground,
-} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
-
-import { Bubble } from 'react-native-gifted-chat'
-
 import firebaseSDK from '../../../config/firebaseSDK';
 import firebase from 'react-native-firebase';
 import _ from 'lodash'
@@ -104,23 +97,6 @@ export default class ChatForm extends React.Component {
       // .catch(function (error) {
       //   console.error("Error adding document: ", error);
       // });
-  }
-
-  renderBubble (props) {
-    return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          right: {
-            backgroundColor: '#3c7568'
-          },
-          left: {
-            backgroundColor: '#77d1a7'
-          }
-        }}
-      />
-    )
-
   }
 
   render() {

@@ -62,6 +62,7 @@ export default class DeleteAccount extends Component {
     var user = firebase.auth().currentUser;
     this.setNoSearch();
     user.delete().then(function() {
+      firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).delete()
     }).catch(function(error) {
         Alert("Account deletion failed! You must sign in again to delete the account!")
         this.signOutUser();
