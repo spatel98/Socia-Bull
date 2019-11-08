@@ -113,12 +113,12 @@ export default class Chats extends React.Component {
         this.setState({requests: _.toArray(doc.data().requests)})
       
        }
+       this.createNewLists()
+      })
+
+     
+
       
-      }).bind(this)
-
-     this.createNewLists()
-
-      this.setState({isFetching: false})   
   };
 
 
@@ -149,6 +149,9 @@ createNewLists = () => {
   if(this.getLength(this.state.requests) > 0)
   {
    this.state.requests.forEach( val => {
+
+
+    
      firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
 
      if(doc.exists)
@@ -164,12 +167,12 @@ createNewLists = () => {
     })
     });
 }
+
+  this.setState({isFetching: false})   
 }
 
   onRefresh = () => {
     this.setState({isFetching: true}, () => this.fetch())
-
-    this.createNewLists()
   }
 
   sendRequest = () => {
@@ -369,17 +372,6 @@ createNewLists = () => {
 
   render(){
 
-    if(this.getLength(this.state.users) != this.getLength(this.state.matches) || this.getLength(this.state.requestsUsers) != this.getLength(this.state.requests))
-    {
-      this.createNewLists()
-    }
-    if(!this.state.loaded){
-      setTimeout(() => { this.onRefresh() }, 100);
-      setTimeout(() => { this.onRefresh() }, 250);
-      setTimeout(() => { this.onRefresh() }, 500);
-      setTimeout(() => { this.onRefresh() }, 2000);
-      this.state.loaded=true;
-    }
     return(
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
