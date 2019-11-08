@@ -210,6 +210,36 @@ export default class Home extends Component {
 }
   render() {
     const { photo } = this.state
+    if(this.state.firstName==''){
+      console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
+      firebase
+        .firestore().collection("users").doc(firebaseSDK.shared.uid)
+        .onSnapshot((doc) => {
+          console.log('doc data:', doc.data())
+          const data = doc.data()
+          if(data!=undefined){
+            this.setState({
+              firstName: data.firstName,
+              lastName: data.lastName,
+              dates: data.dates,
+              friends: data.friends,
+              studybuddies: data.studybuddies,
+              bdate: new Date(data.date),
+              email: data.email,
+              gender: data.gender,
+              netId: data.netId,
+              profPic: data.profPic,
+              imageSource: data.profPic,
+            })
+            this.setState({age: today.getFullYear()-this.state.bdate.getFullYear()})
+            if(today.getMonth()<(this.state.bdate.getMonth()) || (today.getMonth()===(this.state.bdate.getMonth())&&today.getDate()<=this.state.bdate.getDate())){
+              this.setState({age: this.state.age-1})
+            }
+            this.setState({firstName: this.state.firstName.charAt(0).toUpperCase()+this.state.firstName.slice(1)})
+            this.setState({lastName: this.state.lastName.charAt(0).toUpperCase()+this.state.lastName.slice(1)})
+          }
+        })
+    }
     // { () => this.onInitialize() }
     return (
       <View style={styles.container}>

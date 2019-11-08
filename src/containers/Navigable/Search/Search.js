@@ -11,10 +11,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   TextInput,
-  ActivityIndicator
 } from 'react-native';
-
-import _ from 'lodash'
 
 import Swiper from 'react-native-deck-swiper'
 import { element } from 'prop-types';
@@ -24,15 +21,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: "center",
     alignItems: 'center',
-    padding: 5,
-    borderColor: '#ffffff00'
+    padding: 5
   },
   card: {
 
-    borderRadius: 32,
-    borderWidth: 3,
+    borderRadius: 4,
+    borderWidth: 2,
     borderColor: "#E8E8E8",
-    backgroundColor: "white",// card color background
+    backgroundColor: "#36485f",// card color background
     alignContent: "center",
     alignItems: 'center',
     padding: 25,
@@ -43,48 +39,59 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 25,
     backgroundColor: "transparent",
-    color: 'black'
+    color: 'white'
   },
   smalltext: {
     textAlign: "center",
     fontSize: 17,
     backgroundColor: "transparent",
-    color: 'black'
+    color: 'white'
   },
   imagestyle: {
     width: 220,
     height: 220,
-    alignContent: "center",
-    borderRadius: 220 / 2
+    alignContent: "center"
   }
 });
+
+const people = [
+  {
+    name: 'Brynn',
+    photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
+    username: 'brynn@mail.usf.edu',
+    level: 'Sophomore',
+    classes: ["Calculus I", "Biology I", "Intro to Architecture", "Intro to Film"],
+  },
+  {
+    name: 'Mario',
+    photo: 'http://www.newdesignfile.com/postpic/2015/02/mario-128x128-icon_245367.png',
+    username: 'MarioMario@mail.usf.edu',
+    level: 'Freshman',
+    classes: ["Calculus II", "Chemistry I", "Intro to Architecture"],
+  },
+  {
+    name: 'Jeff',
+    photo: 'https://findicons.com/files/icons/1606/128x128_icons_6/128/apple.png',
+    username: 'Jeff@mail.usf.edu',
+    level: 'Senior',
+    classes: ["Calculus III", "Biology II", "Intro to Humanities"],
+  },
+  {
+    name: 'Mike',
+    photo: 'https://globalhealth.washington.edu/sites/default/files/styles/faculty/public/faculty/Jeffrey%20Lane-web.jpg',
+    username: 'Mike@mail.usf.edu',
+    level: 'Senior',
+    classes: ["Calculus I", "Intro to Architecture", "Intro to Humanities", "Foundations of Engineering"],
+  }
+]
 
 export default class Search extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       college: '',
-      swipedOn: [],
-      cards:[],
-      userID: '',
-      cardIndex: 0,
-      ids:[],
-      ignore:[],
-      addedIds: [],
-      studybuddies: false,
-      menPref: false,
-      womenPref: false,
-      otherPref: false,
-      loading: true,
-      noCards: false,
-      dates: false,
-      friends: false,
-      doneSetup: true
-      
     }
   }
-
-  //Call these functions in component.update after setting doUpdate true in component unmount
 
   componentDidMount() {
     console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
@@ -94,321 +101,50 @@ export default class Search extends React.Component {
         console.log('doc data:', doc.data())
         const data = doc.data()
         if(data!=undefined){
-        this.setState({
-          college: data.college,
-          gender: data.gender,
-          swipedOn: _.toArray(data.swipedOn),
-          matches: _.toArray(data.matches),
-          ignore: _.toArray(data.ignore),
-          studybuddies: data.studybuddies == null ? false : data.studybuddies,
-          dates: data.dates == null ? false : data.dates,
-          friends: data.friends == null ? false : data.friends,
-          userID: doc.id,
-          addedIds: [],
-          menPref: data.menPref == null ? false : data.menPref,
-          womenPref: data.womenPref == null ? false : data.womenPref,
-          otherPref: data.otherPref == null ? false : data.otherPref
-          
-        })
-        console.log('current uid:  after state set', firebaseSDK.shared.uid)
-       //Have to call this here to ensure that state has been set from firebase
-        this.getMatches()
+          this.setState({
+            firstName: data.college,
+          })
         }
         console.log('current uid: ', firebaseSDK.shared.uid)
       })
+
+    var query= firebase.firestore().collection("users").where("college", "==", this.state.college)
+    console.log("query: ", query)
   }
-
-  getMatches = () =>
-  {
-
-    if(!this.state.studybuddies && !this.state.friends && !this.state.dates)
-    {
-      this.setState({loading: false, doneSetup: false})
-
-      return
-    }
-
-
-    if(this.state.studybuddies)
-    {
-
-     // console.log("EPIC")
-    firebase.firestore().collection('users').where("college", "==", this.state.college)
-      .get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-
-          if(doc.exists)
-          {
-            tester = (doc.data().swipedOn != null ? !doc.data().swipedOn.includes(this.state.userID) : true)
-            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
-            {
-             // console.log("studybuddy")
-            temp = doc.data()
-            temp.id = doc.id
-            this.state.cards.push(temp)
-            this.state.addedIds.push(temp.id)
-            this.setState({cards: this.state.cards})
-            }
-          }
-        });
-
-        if(!this.state.dates && !this.state.friends)
-        {
-          this.setState({loading: false})
-        }
-    })
-  }
-
-  if(this.state.dates)
-  {
-
-    genderarray = [];
-
-    if(this.state.menPref)
-    {
-      genderarray.push('male')
-    }
-
-    if(this.state.womenPref)
-    {
-      genderarray.push('female')
-    }
-
-    if(this.state.otherPref)
-    {
-      genderarray.push('other')
-    }
-
-    if(genderarray.length > 0)
-    {
-
-      genderarray.forEach( val => {
-
-    firebase.firestore().collection('users').where('gender', '==', val)
-      .get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-
-          if(doc.exists)
-          {
-
-            if(this.isValidGenderForDoc(doc, this.state.gender))
-            {
-              tester = (doc.data().swipedOn != null ? !doc.data().swipedOn.includes(this.state.userID) : true)
-              
-              if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
-              {
-              temp = doc.data()
-              temp.id = doc.id
-              this.state.cards.push(temp)
-              this.state.addedIds.push(temp.id)
-              this.setState({cards: this.state.cards})
-              }
-            }
-          }
-        });
   
-        if(!this.state.friends)
-        {
-          this.setState({loading: false})
-        }
-
-      })
-    })
-    }
-  }
-
-  if(this.state.friends)
-  {
-    firebase.firestore().collection('users').where("friends", "==", true)
-      .get().then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-
-          if(doc.exists)
-          {
-            tester = (doc.data().swipedOn != null ? !doc.data().swipedOn.includes(this.state.userID) : true)
-            if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
-            {
-            temp = doc.data()
-            temp.id = doc.id
-            this.state.cards.push(temp)
-            this.state.addedIds.push(temp.id)
-            this.setState({cards: this.state.cards})
-            }
-          }
-        });
-        this.setState({loading: false})
-    })
-  }
-
-
-    
-  }
-
-
-  isValidGenderForPref = (menPref, womenPref, otherPref, gender) =>
-  {
-
-    if(menPref != null)
-    {
-      if(menPref && gender == 'male')
-      {
-        return true
-      }
-       
-    }
-
-    if(womenPref != null)
-    {
-      if(womenPref && gender == 'female')
-      {
-        return true
-      }
-    }
-
-    if(otherPref != null)
-    {
-      if(otherPref && gender == 'other')
-      {
-        return true
-      }
-    }
-
-
-  }
-
-  isValidGenderForDoc = (doc, gender)=>
-  {
-    return isValidGenderForPref(doc.data().menPref,doc.data().womenPref, doc.data().otherPref, gender)
-  }
-
- getLength = (arr) =>{
-  return Object.keys(arr).length;
-}
-
-  onSwipeLeft = (cardIndex) =>{
-
-    tempc = this.state.cards[cardIndex]
-
-    if(tempc == null)
-      return
-
-    if(tempc.id == null)
-      return
-
-    temp = tempc.id
-
-    this.state.ignore.push(temp)
-
-    firebase.firestore().collection('users').doc(this.state.userID).set({
-      ignore: firebase.firestore.FieldValue.arrayUnion(temp)
-    }, { merge: true })
-  }
-
-  onSwipeRight = (cardIndex) =>{
-
-    card = this.state.cards[cardIndex]
-
-    if(card == null)
-      return
-
-    console.log(card.id)
-    
-    if(card.id == null)
-      return
-   
-      // if this person swiped on me and i swiped on them afterwards
-    if(this.state.swipedOn.includes(card.id))
-    {
-      firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).set({
-        matches: firebase.firestore.FieldValue.arrayUnion(card.id),
-        swipedOn: firebase.firestore.FieldValue.arrayRemove(card.id)
-      }, { merge: true })
-
-      firebase.firestore().collection('users').doc(card.id).set({
-        matches: firebase.firestore.FieldValue.arrayUnion(this.state.userID)
-      }, { merge: true })
-    }
-    else
-    {
-      // else add my id to their swiped values using userID since it is the same as firebaseSDK.shared.uid but it fixed a bug
-      firebase.firestore().collection('users').doc(card.id).set({
-        swipedOn: firebase.firestore.FieldValue.arrayUnion(this.state.userID)
-      }, { merge: true })
-    }
-    
+  renderClassNames(card) {
+    return card['classes'].map((item, index) => <Text key={index} style={styles.smalltext}>{item}</Text>);
   }
 
   render() {
-
-   if(this.state.loading)
-   return(
-   <View style={styles.container}>
-     <ActivityIndicator size="large" animating={this.state.loading}/>
-   </View>)
-
-
-
-   if((this.state.doneSetup != null && !this.state.doneSetup) || this.state.cards.length <= 0 || this.state.noCards)
-   return(
-    <View style={styles.container}>
-    <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}></ImageBackground>
-    <Text>{this.state.doneSetup == true ? 'Please come back later for more matches' : "You haven't set any search settings. Go to the profile page to configure your search settings"}</Text>
-    <Text>{this.state.cards.length}</Text>
-  </View>)
-
- 
-  
-      return (
+    return (
       <View style={styles.container}>
-         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' , borderWidth: 0}}></ImageBackground>
         <Swiper
-          ref={swiper => {
-            this.swiper = swiper
-          }}
-          cards={this.state.cards}
-          cardIndex={this.state.cardIndex}
+          cards={people}
           verticalSwipe={false}
-          infinite={false}
+          infinite={true}
           cardVerticalMargin={60}
-          showSecondCard={false}
           renderCard={(card) => {
-
-            if(card == null)
-              return ( 
+            return (
               <View style={styles.card}>
-                <Text>
-                  Please come back for more
-                </Text>
-              </View>)
-            
-          return (
-              <View style={styles.card}>
-                <View style={styles.imagestyle}>
                 <Image
                   style={styles.imagestyle}
                   resizeMode="cover"
-                  source={card.profPic == null ? require('../../../assets/images/click_to_add.png') : {uri: card.profPic}}
+                  source={{ uri: card['photo'] }}
                 />
-                </View>
-                <Text style={styles.text}>{card['firstName']}</Text>
-                <Text style={styles.text}>{card.college}</Text>
-                <Text style={{ fontSize: 22, padding: 5, color: 'black' }}>{card.major}</Text>
-               
-                <Text style={{ fontSize: 21, padding: 5, color: 'black' }}>Seeking</Text>
-                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>{card.dates && this.state.dates && this.isValidGenderForPref(this.state.menPref,this.state.womenPref,this.state.otherPref, card.gender) ? 'Dates ': ''}{card.friends && this.state.friends ? 'Friends ': ''}{card.studybuddies && this.state.studybuddies ? 'Study Buddy': ''}</Text>
-                
-           
-
+                <Text style={styles.text}>{card['name']}</Text>
+                <Text style={{ fontSize: 22, padding: 5, color: 'white' }}>{card['level']}</Text>
+                <Text style={{ fontSize: 21, padding: 5, color: 'white' }}>Classes in Common</Text>
+                {this.renderClassNames(card)}
               </View>
             )
           }}
 
           onSwiped={(cardIndex) => { console.log(cardIndex) }}
-          onSwipedLeft={(cardIndex) => this.onSwipeLeft(cardIndex)}
-          onSwipedRight={(cardIndex) => this.onSwipeRight(cardIndex)}
-          onSwipedAll={() => { this.setState({noCards: true}) }}
-          backgroundColor={'#ffffff00'}
-          showSecondCard={false}
+          onSwipedAll={() => { console.log('onSwipedAll') }}
+          cardIndex={0}
+          backgroundColor={'#59cbbd'}
+          showSecondCard={true}
           stackSize={3}>
 
         </Swiper>
