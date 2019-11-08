@@ -1,15 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View, Picker, TouchableOpacity } from 'react-native';
+import firebase from 'react-native-firebase';
 import { Button } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
-import firebase from 'react-native-firebase';
 const date = new Date().getDate();
 const month = new Date().getMonth()+1;
 const year = new Date().getFullYear()-18;
 const max = year+"-"+month+"-"+date;
 export default class SignUpForm extends React.Component {
-  state = { firstName: '', lastName: '', email: '', date: '', gender: '', password: '', showLoading: false, errorMessage: null }
-  handleSignUp = () => {
+	state = { firstName: '', lastName: '', email: '', date: '', gender: '', password: '', showLoading: false, errorMessage: null }
+	handleSignUp = () => {
     const {
       firstName,
       lastName,
@@ -57,17 +57,7 @@ export default class SignUpForm extends React.Component {
         })
         .catch(function(error) {
           console.error("Error writing document: ", error);
-        })
-        var user = firebase.auth().currentUser;
-        user.sendEmailVerification().then(function(){
-          console.log("email verification sent to user");
-        }).catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-    
-          console.log(errorCode, errorMessage);
-        })
+        });
         //this.doSendEmailVerification();
         this.props.navigation.navigate('Login')
       })
