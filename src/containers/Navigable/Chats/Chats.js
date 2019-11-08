@@ -189,7 +189,7 @@ createNewLists = () => {
      if(doc.exists)
      {
       if(!this.state.rids.includes(val)){
-      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data.profPic == null ? require('../../../assets/images/click_to_add.png') : doc.data().profPic}
+      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: doc.data().email, id: val, photo: doc.data().profPic == null ? require('../../../assets/images/click_to_add.png') : doc.data().profPic}
       this.state.requestsUsers.push(temp)
       this.state.rids.push(val)
       this.setState({requestsusers: this.state.requestsUsers})
