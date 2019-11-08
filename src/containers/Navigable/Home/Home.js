@@ -20,6 +20,7 @@ import {
   TextInput,
   CheckBox,
 } from 'react-native';
+import {Avatar} from "react-native-elements"
 import logo from "../../../assets/images/click_to_add.png";
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -215,6 +216,13 @@ export default class Home extends Component {
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
         <View style={styles.header}><ImageBackground source={require('../../../assets/images/background-8.jpg')} style={{width: '100%',height:'100%' }}></ImageBackground></View>
         {(this.state.imageSource==null && !this.state.newPicked)&&(
+          <Avatar style={styles.avatar3} rounded size={100} onPress={this.handleChoosePhoto} onEditPress={this.handleChoosePhoto} showEditButton={true} source={require('../../../assets/images/click_to_add.png')}></Avatar>
+        )}
+        {(this.state.imageSource!=null && !this.state.newPicked)&&(
+        <Avatar style={styles.avatar3} rounded size={100} onPress={this.handleChoosePhoto} onEditPress={this.handleChoosePhoto} showEditButton={true} source={{uri: this.state.imageSource}}></Avatar>)}
+        {(this.state.newPicked)&&(
+        <Avatar style={styles.avatar3} rounded size={100} onPress={this.handleChoosePhoto} onEditPress={this.handleChoosePhoto} showEditButton={true} editButton={{underlayColor: '#fff'}} source={this.state.avatarSource}></Avatar>)}
+        {/* {(this.state.imageSource==null && !this.state.newPicked)&&(
         <ImageBackground source={require('../../../assets/images/click_to_add.png')} borderRadius={63} style={styles.avatar3}>
           <TouchableOpacity style={styles.avatar2}
             onPress={this.handleChoosePhoto}>
@@ -225,13 +233,13 @@ export default class Home extends Component {
           <TouchableOpacity style={styles.avatar2}
             onPress={this.handleChoosePhoto}>
           </TouchableOpacity>
-        </ImageBackground>)}
-        {(this.state.newPicked)&&(
+        </ImageBackground>)} */}
+        {/* {(this.state.newPicked)&&(
         <ImageBackground source={this.state.avatarSource} borderRadius={63} style={styles.avatar3}>
           <TouchableOpacity style={styles.avatar2}
             onPress={this.handleChoosePhoto}>
           </TouchableOpacity>
-        </ImageBackground>)}
+        </ImageBackground>)} */}
         <View style={styles.body}>
           <View style={styles.bodyContent}>
             <Text style={styles.name}>{this.state.firstName} {this.state.lastName}, {this.state.age}</Text>
@@ -284,8 +292,8 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   avatar: {
-    width: 130,
-    height: 130,
+    width: 10,
+    height: 10,
     borderRadius: 63,
     borderWidth: 0,
     alignSelf: 'center',
@@ -304,13 +312,13 @@ const styles = StyleSheet.create({
   avatar3: {
     width: 130,
     height: 130,
-    borderRadius: 63,
-    borderWidth: 0,
-    borderColor: "white",
+    //borderRadius: 63,
+    //borderWidth: 0,
+    //borderColor: "white",
     alignSelf: 'center',
     position: 'absolute',
     marginTop: 80,
-    zIndex: 104,
+    //zIndex: 104,
   },
   lookingFor: {
     fontSize: 20,

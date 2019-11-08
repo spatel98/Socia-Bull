@@ -30,6 +30,14 @@ const config = {
 }
 firebase.initializeApp(config)
 export default class DeleteAccount extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dates: false,
+      friends: false,
+      studybuddies: false,
+    }
+  }
   signOutUser = async () => {
     try {
         await firebase.auth().signOut();
@@ -40,15 +48,27 @@ export default class DeleteAccount extends Component {
     }
 }
   deleteAccount(){
+    firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
+      dates: false,
+      studybuddies: false,
+      friends: false,
+    }, { merge: true })
+    .then(function() {
+      console.log("Document successfully written!");
+    })
+    .catch(function(error) {
+      console.error("Error writing document: ", error);
+    });
     var user = firebase.auth().currentUser;
+    this.setNoSearch();
     user.delete().then(function() {
       firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).delete()
     }).catch(function(error) {
         Alert("Account deletion failed! You must sign in again to delete the account!")
         this.signOutUser();
     // An error happened.
-    });
-  }
+    });}
+
   render() {
     // { () => this.onInitialize() }
     return (
