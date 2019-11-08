@@ -88,7 +88,7 @@ export default class Search extends React.Component {
 
   componentDidMount() {
     console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
-    firebase
+    this.unsubscribe = firebase
       .firestore().collection("users").doc(firebaseSDK.shared.uid)
       .onSnapshot((doc) => {
         console.log('doc data:', doc.data())
@@ -119,23 +119,33 @@ export default class Search extends React.Component {
       })
   }
 
+  componentWillUnmount() {
+    console.log("component will unmount called")
+    this.unsubscribe();
+    this.unsubscribe1();
+    this.unsubscribe2();
+    this.unsubscribe3();
+    this.setState({
+      addedIds: [],
+      noCards: false
+    })
+  }
+
   getMatches = () =>
   {
 
-    if(!this.state.studybuddies && !this.state.friends && !this.state.dates)
-    {
-      this.setState({loading: false, doneSetup: false})
-
-      return
-    }
-
-
-    if(this.state.studybuddies)
-    {
+  // if(this.state.studybuddies)
+   // {
 
      // console.log("EPIC")
-    firebase.firestore().collection('users').where("college", "==", this.state.college)
+    this.unsubscribe1 = firebase.firestore().collection('users').where("college", "==", this.state.college)
       .onSnapshot(querySnapshot => {
+
+        if(!this.state.studybuddies)
+        {
+          return
+        }
+      
 
         count = 0
         querySnapshot.forEach(doc => {
@@ -163,7 +173,7 @@ export default class Search extends React.Component {
           this.setState({loading: false})
         }
     })
-  }
+//  }
 
   if(this.state.dates)
   {
@@ -190,7 +200,7 @@ export default class Search extends React.Component {
 
       genderarray.forEach( val => {
 
-    firebase.firestore().collection('users').where('gender', '==', val)
+    this.unsubscribe2 = firebase.firestore().collection('users').where('gender', '==', val)
       .onSnapshot(querySnapshot => {
 
         count = 0
@@ -227,7 +237,7 @@ export default class Search extends React.Component {
 
   if(this.state.friends)
   {
-    firebase.firestore().collection('users').where("friends", "==", true)
+    this.unsubscribe3 = firebase.firestore().collection('users').where("friends", "==", true)
     .onSnapshot(querySnapshot => {
 
         count = 0
@@ -257,6 +267,16 @@ export default class Search extends React.Component {
 
     
   }
+
+  if(!this.state.studybuddies && !this.state.friends && !this.state.dates)
+  {
+    this.setState({loading: false, doneSetup: false})
+
+    return
+  }
+  else{
+    this.setState({doneSetup: true})
+    }
 
   this.setState({loading: false})
     
@@ -359,21 +379,22 @@ export default class Search extends React.Component {
   render() {
 
    if(this.state.loading)
+   {
    return(
    <View style={styles.container}>
      <ActivityIndicator size="large" animating={this.state.loading}/>
    </View>)
 
+   }
 
-
-   if((this.state.doneSetup != null && !this.state.doneSetup) || this.state.cards.length <= 0 || this.state.noCards)
+   if((this.state.doneSetup != null && !this.state.doneSetup) || this.state.cards.length <= 0 || this.state.noCards){
    return(
     <View style={styles.container}>
     <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}></ImageBackground>
     <Text>{this.state.doneSetup == true ? 'Please come back later for more matches' : "You haven't set any search settings. Go to the profile page to configure your search settings"}</Text>
     <Text>{this.state.cards.length}</Text>
   </View>)
-
+  }
  
   
       return (
