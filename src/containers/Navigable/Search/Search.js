@@ -110,7 +110,8 @@ export default class Search extends React.Component {
           otherPref: data.otherPref == null ? false : data.otherPref
           
         })
-        console.log('current uid:  after state set', firebaseSDK.shared.uid)
+      //  console.log('current uid:  after state set', firebaseSDK.shared.uid)
+        console.log('study', this.state.studybuddies)
        //Have to call this here to ensure that state has been set from firebase
         this.getMatches()
         }
@@ -134,7 +135,7 @@ export default class Search extends React.Component {
 
      // console.log("EPIC")
     firebase.firestore().collection('users').where("college", "==", this.state.college)
-      .get().then(querySnapshot => {
+      .onSnapshot(querySnapshot => {
 
         count = 0
         querySnapshot.forEach(doc => {
@@ -190,7 +191,7 @@ export default class Search extends React.Component {
       genderarray.forEach( val => {
 
     firebase.firestore().collection('users').where('gender', '==', val)
-      .get().then(querySnapshot => {
+      .onSnapshot(querySnapshot => {
 
         count = 0
         querySnapshot.forEach(doc => {
@@ -227,7 +228,7 @@ export default class Search extends React.Component {
   if(this.state.friends)
   {
     firebase.firestore().collection('users').where("friends", "==", true)
-      .get().then(querySnapshot => {
+    .onSnapshot(querySnapshot => {
 
         count = 0
 
