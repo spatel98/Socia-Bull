@@ -24,14 +24,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: "center",
     alignItems: 'center',
-    padding: 5
+    padding: 5,
+    borderColor: '#ffffff00'
   },
   card: {
 
-    borderRadius: 4,
-    borderWidth: 2,
+    borderRadius: 32,
+    borderWidth: 3,
     borderColor: "#E8E8E8",
-    backgroundColor: "#36485f",// card color background
+    backgroundColor: "white",// card color background
     alignContent: "center",
     alignItems: 'center',
     padding: 25,
@@ -42,51 +43,21 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 25,
     backgroundColor: "transparent",
-    color: 'white'
+    color: 'black'
   },
   smalltext: {
     textAlign: "center",
     fontSize: 17,
     backgroundColor: "transparent",
-    color: 'white'
+    color: 'black'
   },
   imagestyle: {
     width: 220,
     height: 220,
-    alignContent: "center"
+    alignContent: "center",
+    borderRadius: 220 / 2
   }
 });
-
-const people = [
-  {
-    name: 'Brynn',
-    photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
-    username: 'brynn@mail.usf.edu',
-    level: 'Sophomore',
-    classes: ["Calculus I", "Biology I", "Intro to Architecture", "Intro to Film"],
-  },
-  {
-    name: 'Mario',
-    photo: 'http://www.newdesignfile.com/postpic/2015/02/mario-128x128-icon_245367.png',
-    username: 'MarioMario@mail.usf.edu',
-    level: 'Freshman',
-    classes: ["Calculus II", "Chemistry I", "Intro to Architecture"],
-  },
-  {
-    name: 'Jeff',
-    photo: 'https://findicons.com/files/icons/1606/128x128_icons_6/128/apple.png',
-    username: 'Jeff@mail.usf.edu',
-    level: 'Senior',
-    classes: ["Calculus III", "Biology II", "Intro to Humanities"],
-  },
-  {
-    name: 'Mike',
-    photo: 'https://globalhealth.washington.edu/sites/default/files/styles/faculty/public/faculty/Jeffrey%20Lane-web.jpg',
-    username: 'Mike@mail.usf.edu',
-    level: 'Senior',
-    classes: ["Calculus I", "Intro to Architecture", "Intro to Humanities", "Foundations of Engineering"],
-  }
-]
 
 export default class Search extends React.Component {
   constructor(props) {
@@ -147,7 +118,6 @@ export default class Search extends React.Component {
       })
   }
 
-  
   getMatches = () =>
   {
 
@@ -192,7 +162,7 @@ export default class Search extends React.Component {
   if(this.state.dates)
   {
 
-    genderarray = []
+    genderarray = [];
 
     if(this.state.menPref)
     {
@@ -208,7 +178,13 @@ export default class Search extends React.Component {
     {
       genderarray.push('other')
     }
-    firebase.firestore().collection('users').where('gender', 'in', genderarray)
+
+    if(genderarray.length > 0)
+    {
+
+      genderarray.forEach( val => {
+
+    firebase.firestore().collection('users').where('gender', '==', val)
       .get().then(querySnapshot => {
         querySnapshot.forEach(doc => {
 
@@ -236,8 +212,9 @@ export default class Search extends React.Component {
           this.setState({loading: false})
         }
 
+      })
+    })
     }
-    )
   }
 
   if(this.state.friends)
@@ -268,35 +245,40 @@ export default class Search extends React.Component {
   }
 
 
-  isValidGenderForDoc = (doc, gender)=>{
-  
-    if(doc.data().menPref != null)
+  isValidGenderForPref = (menPref, womenPref, otherPref, gender) =>
+  {
+
+    if(menPref != null)
     {
-      if(doc.data().menPref)
+      if(menPref && gender == 'male')
       {
-        return gender == 'male'
+        return true
       }
        
     }
 
-    if(doc.data().womenPref != null)
+    if(womenPref != null)
     {
-      if(doc.data().womenPref)
+      if(womenPref && gender == 'female')
       {
-        return gender == 'female'
+        return true
       }
     }
 
-    if(doc.data().otherPref != null)
+    if(otherPref != null)
     {
-      if(doc.data().otherPref)
+      if(otherPref && gender == 'other')
       {
-        return gender == 'other'
+        return true
       }
     }
 
 
-    return false
+  }
+
+  isValidGenderForDoc = (doc, gender)=>
+  {
+    return isValidGenderForPref(doc.data().menPref,doc.data().womenPref, doc.data().otherPref, gender)
   }
 
  getLength = (arr) =>{
@@ -364,19 +346,13 @@ export default class Search extends React.Component {
      <ActivityIndicator size="large" animating={this.state.loading}/>
    </View>)
 
-if(!this.state.doneSetup)
-{
-return(<View style={styles.container}>
-    <Text>You haven't set any search settings. Go to the profile page to configure your search settings</Text>
-</View>)
-}
 
 
-
-   if(this.state.cards.length <= 0 || this.state.noCards)
+   if((this.state.doneSetup != null && !this.state.doneSetup) || this.state.cards.length <= 0 || this.state.noCards)
    return(
     <View style={styles.container}>
-    <Text>Please come back later for more matches</Text>
+    <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}></ImageBackground>
+    <Text>{this.state.doneSetup == true ? 'Please come back later for more matches' : "You haven't set any search settings. Go to the profile page to configure your search settings"}</Text>
     <Text>{this.state.cards.length}</Text>
   </View>)
 
@@ -384,7 +360,7 @@ return(<View style={styles.container}>
   
       return (
       <View style={styles.container}>
-        
+         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' , borderWidth: 0}}></ImageBackground>
         <Swiper
           ref={swiper => {
             this.swiper = swiper
@@ -407,18 +383,19 @@ return(<View style={styles.container}>
             
           return (
               <View style={styles.card}>
+                <View style={styles.imagestyle}>
                 <Image
                   style={styles.imagestyle}
                   resizeMode="cover"
                   source={card.profPic == null ? require('../../../assets/images/click_to_add.png') : {uri: card.profPic}}
                 />
-
+                </View>
                 <Text style={styles.text}>{card['firstName']}</Text>
                 <Text style={styles.text}>{card.college}</Text>
-                <Text style={{ fontSize: 22, padding: 5, color: 'white' }}>{card.id}</Text>
+                <Text style={{ fontSize: 22, padding: 5, color: 'black' }}>{card.major}</Text>
                
-                <Text style={{ fontSize: 21, padding: 5, color: 'white' }}>Seeking</Text>
-                <Text style={{ fontSize: 20, padding: 5, color: 'white' }}>{card.dates && this.state.dates ? 'Dates ': ''}{card.friends && this.state.friends ? 'Friends ': ''}{card.studybuddies && this.state.studybuddies ? 'Study Buddy': ''}</Text>
+                <Text style={{ fontSize: 21, padding: 5, color: 'black' }}>Seeking</Text>
+                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>{card.dates && this.state.dates && this.isValidGenderForPref(this.state.menPref,this.state.womenPref,this.state.otherPref, card.gender) ? 'Dates ': ''}{card.friends && this.state.friends ? 'Friends ': ''}{card.studybuddies && this.state.studybuddies ? 'Study Buddy': ''}</Text>
                 
            
 
@@ -430,8 +407,8 @@ return(<View style={styles.container}>
           onSwipedLeft={(cardIndex) => this.onSwipeLeft(cardIndex)}
           onSwipedRight={(cardIndex) => this.onSwipeRight(cardIndex)}
           onSwipedAll={() => { this.setState({noCards: true}) }}
-          backgroundColor={'#59cbbd'}
-          showSecondCard={true}
+          backgroundColor={'#ffffff00'}
+          showSecondCard={false}
           stackSize={3}>
 
         </Swiper>
