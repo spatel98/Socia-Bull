@@ -332,7 +332,7 @@ createNewLists = () => {
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={{uri: item.photo}}
+        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.photo}}
         />
       }
 
@@ -354,7 +354,7 @@ createNewLists = () => {
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={{uri: item.photo}}
+        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.photo}}
         />
       }
       
