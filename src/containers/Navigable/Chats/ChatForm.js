@@ -1,5 +1,12 @@
 import React from 'react';
+import {
+  View,
+  ImageBackground,
+} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
+
+import { Bubble } from 'react-native-gifted-chat'
+
 import firebaseSDK from '../../../config/firebaseSDK';
 import firebase from 'react-native-firebase';
 import _ from 'lodash'
@@ -21,6 +28,16 @@ export default class ChatForm extends React.Component {
 
   static navigationOptions = ({ navigation }) => ({
     title: (navigation.state.params || {}).name || 'Chat!',
+    headerTintColor: '#fff',
+    headerLeft: null,
+    gesturesEnabled: false,
+    headerStyle: {
+      backgroundColor: '#005e48'
+      //backgroundColor: '#59cbbd'
+    },
+    headerTitleStyle: {
+      color: '#fff'
+    }
   });
   
   get user() {
@@ -88,15 +105,45 @@ export default class ChatForm extends React.Component {
       // });
   }
 
+  renderBubble (props) {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          right: {
+            backgroundColor: '#3c7568'
+          },
+          left: {
+            backgroundColor: '#77d1a7'
+          }
+        }}
+      />
+    )
+
+  }
+
   render() {
     return (
-      <GiftedChat
-        messages={this.state.messages}
-        //onSend={firebaseSDK.shared.send}
-        onSend={messages => this.onSend(messages)}
-        user={this.user}
-        inverted = {false}
-      />
+      <View>
+        <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
+          <GiftedChat
+            messages={this.state.messages}
+            //onSend={firebaseSDK.shared.send}
+            onSend={messages => this.onSend(messages)}
+            scrollToBottom = {true}
+            user={this.user}
+            inverted = {false}
+            renderBubble={this.renderBubble}
+          />
+        </ImageBackground>
+      </View>
+      // <GiftedChat
+      //   messages={this.state.messages}
+      //   //onSend={firebaseSDK.shared.send}
+      //   onSend={messages => this.onSend(messages)}
+      //   user={this.user}
+      //   inverted = {false}
+      // />
     );
   }
 

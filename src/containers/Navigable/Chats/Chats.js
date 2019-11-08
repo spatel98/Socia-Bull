@@ -25,29 +25,6 @@ import firebase from 'react-native-firebase'
 import firebaseSDK from '../../../config/firebaseSDK';
 import { thisTypeAnnotation } from '@babel/types';
 
-
-
-const msgs = [
-  {
-    name: 'Brynn',
-    photo: 'https://s3.amazonaws.com/uifaces/faces/twitter/brynn/128.jpg',
-    email: 'brynn@mail.usf.edu',
-    lastMessage: "Hey what's up?"
-  },
-  {
-    name: 'Mario',
-    photo: 'http://www.newdesignfile.com/postpic/2015/02/mario-128x128-icon_245367.png',
-    email: 'MarioMario@mail.usf.edu',
-    lastMessage: 'Epic'
-  },
-  {
-    name: 'Jeff',
-    photo: 'https://findicons.com/files/icons/1606/128x128_icons_6/128/apple.png',
-    email: 'Jeff@mail.usf.edu',
-    lastMessage: 'Trying to study today?'
-  }
-  ]
-
   const styles = StyleSheet.create({
     container: {
       backgroundColor: "#36485f",
@@ -290,6 +267,8 @@ createNewLists = () => {
     if(this.getLength(this.state.requestsUsers) > 0)
     return (
       <ListItem
+      // style = {[{backgroundColor: (this.state.selectedItem[index]) ? 'green' : 'white'}]}
+      containerStyle = {{backgroundColor: '#59cbbd'}}
       title={"Add Friend"}
       
       leftElement={
@@ -404,8 +383,8 @@ createNewLists = () => {
     return(
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
-        <Text style={styles.titlestyle}>
-        Chats</Text>
+        {/* <Text style={styles.titlestyle}>
+        Chats</Text> */}
           <FlatList
           title = "Chats"
           keyExtractor = {this.keyExtractor}
