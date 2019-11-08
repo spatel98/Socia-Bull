@@ -57,7 +57,7 @@ export default createMaterialBottomTabNavigator({
   Search: {
     screen: SearchScreen,
     navigationOptions: {
-      tabBarLabel: 'Search',
+      tabBarLabel: 'Matches',
       tabBarIcon: ({ tintColor }) => (
         <Icon name='heart' color={tintColor} size={24} type='material' />
       )
