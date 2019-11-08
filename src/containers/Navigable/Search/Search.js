@@ -139,7 +139,7 @@ export default class Search extends React.Component {
 
           if(doc.exists)
           {
-            tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
+            tester = (doc.data().swipedOn != null ? !doc.data().swipedOn.includes(this.state.userID) : true)
             if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
             {
              // console.log("studybuddy")
@@ -193,7 +193,7 @@ export default class Search extends React.Component {
 
             if(this.isValidGenderForDoc(doc, this.state.gender))
             {
-              tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
+              tester = (doc.data().swipedOn != null ? !doc.data().swipedOn.includes(this.state.userID) : true)
               
               if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
               {
@@ -225,7 +225,7 @@ export default class Search extends React.Component {
 
           if(doc.exists)
           {
-            tester = (doc.data.swipedOn != null ? !doc.data.swipedOn.includes(this.state.userID) : true)
+            tester = (doc.data().swipedOn != null ? !doc.data().swipedOn.includes(this.state.userID) : true)
             if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
             {
             temp = doc.data()
