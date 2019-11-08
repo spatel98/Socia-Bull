@@ -41,7 +41,7 @@ export default class Home extends Component {
     this.state = {
       firstName: '',
       lastName: '',
-      bdate: '',
+      bdate: '1995-11-11',
       email: '',
       gender: '',
       netId: '',
