@@ -27,6 +27,20 @@ export default class SignUpForm extends React.Component {
       this.setState({ showLoading: false, errorMessage: "All fields empty"})
       return 0
     }
+    else{
+      if(firstName == ''){
+        this.setState({ showLoading: false, errorMessage: "Please type your first name"})
+        return 0
+      }
+      if(lastName == ''){
+        this.setState({ showLoading: false, errorMessage: "Please type your last name"})
+        return 0
+      }
+      if(date == ''){
+        this.setState({ showLoading: false, errorMessage: "Please select your birth date"})
+        return 0
+      }
+    }
 
     if(gender==''){
       this.setState({ showLoading: false, errorMessage: "Please pick a gender"})
