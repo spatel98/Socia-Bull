@@ -63,10 +63,6 @@ export default class SignUpForm extends React.Component {
       })
       .catch(error => this.setState({ showLoading: false, errorMessage: error.message }))
 	}
-  // doSendEmailVerification = () =>
-  // this.auth.currentUser.sendEmailVerification({
-  //   url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
-  // });
   render() {
     const { showLoading } = this.state
     return (
