@@ -16,9 +16,11 @@ import {
   FlatList
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import _ from 'lodash'
 import {
-ListItem, Icon, Badge, Button
+ListItem, Badge, Button, ButtonGroup
 } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import firebase from 'react-native-firebase'
@@ -87,13 +89,21 @@ export default class Chats extends React.Component {
     otherEmail: '',
     otherID: '',
     messages: [],
+    selectedIndex: 0,
+
     };
 
+    this.updateIndex = this.updateIndex.bind(this)
    // console.log(this.state.firstName)
   };
 
+  updateIndex (selectedIndex) {
+    this.setState({selectedIndex})
+  }
+
   componentDidMount() {
  
+    this.onRefresh()
     this.onRefresh()
 
   //  this.createNewLists()
@@ -144,6 +154,8 @@ createNewLists = () => {
    }
          
    })
+
+   this.setState({isFetching: false})
    });
 
   }
@@ -162,17 +174,17 @@ createNewLists = () => {
        
       temp = doc.data()
       temp.id = doc.id;
-     //  {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
       this.state.requestsUsers.push(temp)
       this.state.rids.push(val)
       }
     }
-          
+   
     })
+    this.setState({isFetching: false})
     });
 }
 
-  this.setState({isFetching: false})   
+  
 }
 
   onRefresh = () => {
@@ -317,6 +329,7 @@ createNewLists = () => {
 
 
   pressButton = () =>{
+    console.log("Name: ", this.state.otherName,' lol', this.state.otherID)
     this.props.navigation.navigate('ChatForm', {
          name: this.state.otherName,
          id: this.state.otherID,
@@ -332,7 +345,7 @@ createNewLists = () => {
     <ListItem
       title={item.firstName}
       subtitle={item.email}
-      onPress={() =>{(this.state.otherName=item.firstname)&&(this.state.otherID=item.id)&&(this.state.otherEmail=item.email)&&(this.pressButton())}}//this.pressButton(item, this.props)}
+      onPress={() =>{(this.state.otherName=item.firstName)&&(this.state.otherID=item.id)&&(this.state.otherEmail=item.email)&&(this.pressButton())}}
       leftElement={
         <Image
         style={styles.imagestyle}
@@ -342,7 +355,12 @@ createNewLists = () => {
       }
 
       rightElement={
-        <Icon name='book' color={'#36485f'} size={24} type ='material-community'/>
+        <View style = {{width: 72, height: 35, flexDirection: 'row', padding: 2}}>
+        {(item.friends == null ? false : item.friends) && <Icon name='emoticon' color={'#36485f'} size={24} type ='material'/>}
+        {(item.dates == null ? false : item.dates) &&<Icon name='heart' color={'#36485f'} size={24} type ='material'/>}
+        {(item.studybuddies == null ? false : item.studybuddies) &&<Icon name='book' color={'#36485f'} size={24} type ='material-community'/>}
+        </View>
+        
       }
   
       bottomDivider
@@ -353,13 +371,13 @@ createNewLists = () => {
 
   renderRequests = ({ item }) => (
     <ListItem
-      title={item.name}
-     // subtitle={item.email}
+      title={item.firstName}
+      subtitle={item.email}
       leftElement={
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.photo}}
+        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.profPic}}
         />
       }
       
@@ -374,22 +392,64 @@ createNewLists = () => {
     />
   )
 
+  filterData(){
+
+    if(this.state.selectedIndex == 0)
+    {
+      return this.state.users
+    }
+
+    if(this.state.selectedIndex == 1)
+    {
+      return this.state.users.filter((value, index, arr) => {
+        return value.friends == true
+      })
+    }
+
+    if(this.state.selectedIndex == 2)
+    {
+      return this.state.users.filter((value, index, arr) => {
+        return value.dates == true
+      })
+    }
+
+    if(this.state.selectedIndex == 3)
+    {
+      return this.state.users.filter((value, index, arr) => {
+        return value.studybuddies == true
+      })
+    }
+
+
+  }
 
   render(){
+
+    const buttons = ['All', 'Friends', 'Dates', 'Study']
+
+    const {selectedIndex} = this.state
 
     return(
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
        
+        <ButtonGroup
+        onPress={this.updateIndex}
+        selectedIndex = {selectedIndex}
+        buttons={buttons}
+        containerStyle={{height: 25}}
+        />
+
+
           <FlatList
           title = "Chats"
           keyExtractor = {this.keyExtractor}
-          data={this.state.users}
+          data={this.filterData()}
           refreshing = {this.state.isFetching}
           renderItem={this.renderItem}
           onRefresh={()=>this.onRefresh()}
           ListHeaderComponent={this.addFriend}
-          extraData={this.state}
+          extraData={this.state.selectedIndex}
           />
         <Modal
           isVisible={this.state.addFriendVisible}
