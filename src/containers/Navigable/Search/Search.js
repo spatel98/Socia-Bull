@@ -79,13 +79,12 @@ export default class Search extends React.Component {
       noCards: false,
       dates: false,
       friends: false,
-      doneSetup: true
+      doneSetup: true,
+      messages: []
       
     }
   }
-
   //Call these functions in component.update after setting doUpdate true in component unmount
-
   componentDidMount() {
     console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
     this.unsubscribe = firebase
@@ -114,6 +113,7 @@ export default class Search extends React.Component {
         console.log('study', this.state.studybuddies)
        //Have to call this here to ensure that state has been set from firebase
         this.getMatches()
+        this.setState({loading: false})
         }
         console.log('current uid: ', firebaseSDK.shared.uid)
       })
@@ -123,8 +123,12 @@ export default class Search extends React.Component {
     console.log("component will unmount called")
     this.unsubscribe();
     this.unsubscribe1();
-    this.unsubscribe2();
+    this.unsubscribef();
+    this.unsubscribem();
+    this.unsubscribeo();
     this.unsubscribe3();
+
+    
     this.setState({
       addedIds: [],
       noCards: false
@@ -134,10 +138,6 @@ export default class Search extends React.Component {
   getMatches = () =>
   {
 
-  // if(this.state.studybuddies)
-   // {
-
-     // console.log("EPIC")
     this.unsubscribe1 = firebase.firestore().collection('users').where("college", "==", this.state.college)
       .onSnapshot(querySnapshot => {
 
@@ -146,11 +146,7 @@ export default class Search extends React.Component {
           return
         }
       
-
-        count = 0
         querySnapshot.forEach(doc => {
-
-        
 
           if(doc.exists)
           {
@@ -163,47 +159,23 @@ export default class Search extends React.Component {
             this.state.cards.push(temp)
             this.state.addedIds.push(temp.id)
             this.setState({cards: this.state.cards})
-            count += 1
             }
           }
         });
-
-        if(count > 0)
-        {
-          this.setState({loading: false})
-        }
     })
-//  }
-
-  if(this.state.dates)
-  {
 
     genderarray = [];
 
-    if(this.state.menPref)
-    {
-      genderarray.push('male')
-    }
+    count = 0
 
-    if(this.state.womenPref)
-    {
-      genderarray.push('female')
-    }
-
-    if(this.state.otherPref)
-    {
-      genderarray.push('other')
-    }
-
-    if(genderarray.length > 0)
-    {
-
-      genderarray.forEach( val => {
-
-    this.unsubscribe2 = firebase.firestore().collection('users').where('gender', '==', val)
+    this.unsubscribef = firebase.firestore().collection('users').where('gender', '==', 'female')
       .onSnapshot(querySnapshot => {
 
-        count = 0
+        if(!this.state.dates || !this.state.womenPref)
+        {
+          return
+        }
+    
         querySnapshot.forEach(doc => {
 
           if(doc.exists)
@@ -225,22 +197,78 @@ export default class Search extends React.Component {
           }
         });
   
-        if(count > 0)
-        {
-          this.setState({loading: false})
-        }
-
       })
-    })
-    }
-  }
 
-  if(this.state.friends)
-  {
+      this.unsubscribem = firebase.firestore().collection('users').where('gender', '==', 'male')
+      .onSnapshot(querySnapshot => {
+
+        if(!this.state.dates || !this.state.menPref)
+        {
+          return
+        }
+    
+        querySnapshot.forEach(doc => {
+
+          if(doc.exists)
+          {
+
+            if(this.isValidGenderForDoc(doc, this.state.gender))
+            {
+              tester = (doc.data().swipedOn != null ? !doc.data().swipedOn.includes(this.state.userID) : true)
+              
+              if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
+              {
+              temp = doc.data()
+              temp.id = doc.id
+              this.state.cards.push(temp)
+              this.state.addedIds.push(temp.id)
+              this.setState({cards: this.state.cards})
+              }
+            }
+          }
+        });
+  
+      })
+
+      this.unsubscribeo = firebase.firestore().collection('users').where('gender', '==', 'other')
+      .onSnapshot(querySnapshot => {
+
+        if(!this.state.dates || !this.state.otherPref)
+        {
+          return
+        }
+    
+        querySnapshot.forEach(doc => {
+
+          if(doc.exists)
+          {
+
+            if(this.isValidGenderForDoc(doc, this.state.gender))
+            {
+              tester = (doc.data().swipedOn != null ? !doc.data().swipedOn.includes(this.state.userID) : true)
+              
+              if(doc.id != firebaseSDK.shared.uid && !this.state.matches.includes(doc.id) && !this.state.ignore.includes(doc.id) && tester && !this.state.addedIds.includes(doc.id))
+              {
+              temp = doc.data()
+              temp.id = doc.id
+              this.state.cards.push(temp)
+              this.state.addedIds.push(temp.id)
+              this.setState({cards: this.state.cards})
+              }
+            }
+          }
+        });
+  
+      })
+
+    
     this.unsubscribe3 = firebase.firestore().collection('users').where("friends", "==", true)
     .onSnapshot(querySnapshot => {
 
-        count = 0
+      if(!this.state.friends)
+      {
+        return
+      }
 
         querySnapshot.forEach(doc => {
           
@@ -259,14 +287,7 @@ export default class Search extends React.Component {
           }
         });
 
-        if(count > 0)
-        {
-          this.setState({loading: false})
-        }
     })
-
-    
-  }
 
   if(!this.state.studybuddies && !this.state.friends && !this.state.dates)
   {
@@ -274,25 +295,29 @@ export default class Search extends React.Component {
 
     return
   }
-  else{
+  else
+  {
     this.setState({doneSetup: true})
-    }
+  }
 
   this.setState({loading: false})
     
   }
 
-
-  isValidGenderForPref = (menPref, womenPref, otherPref, gender) =>
+  isValidGenderForPref = (datePref, menPref, womenPref, otherPref, gender) =>
   {
+
+    if(datePref == null || !datePref)
+    {
+        return false
+    }
 
     if(menPref != null)
     {
       if(menPref && gender == 'male')
       {
         return true
-      }
-       
+      }    
     }
 
     if(womenPref != null)
@@ -311,12 +336,16 @@ export default class Search extends React.Component {
       }
     }
 
-
+    return false
   }
 
-  isValidGenderForDoc = (doc, gender)=>
+  isValidGenderForDoc = (doc, gender)=>{
+
+  if(doc.data().dates == null || !doc.data().dates)
   {
-    return isValidGenderForPref(doc.data().menPref,doc.data().womenPref, doc.data().otherPref, gender)
+    return false
+  }
+    return this.isValidGenderForPref(doc.data().dates, doc.data().menPref,doc.data().womenPref, doc.data().otherPref, gender)
   }
 
  getLength = (arr) =>{
@@ -364,6 +393,14 @@ export default class Search extends React.Component {
 
       firebase.firestore().collection('users').doc(card.id).set({
         matches: firebase.firestore.FieldValue.arrayUnion(this.state.userID)
+      }, { merge: true })
+
+      firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).collection('chats').doc(card.id).set({
+        messages: []
+      }, { merge: true })
+  
+      firebase.firestore().collection('users').doc(card.id).collection('chats').doc(firebaseSDK.shared.uid).set({
+        messages: []
       }, { merge: true })
     }
     else
@@ -434,7 +471,7 @@ export default class Search extends React.Component {
                 <Text style={{ fontSize: 22, padding: 5, color: 'black' }}>{card.major}</Text>
                
                 <Text style={{ fontSize: 21, padding: 5, color: 'black' }}>Seeking</Text>
-                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>{card.dates && this.state.dates && this.isValidGenderForPref(this.state.menPref,this.state.womenPref,this.state.otherPref, card.gender) ? 'Dates ': ''}{card.friends && this.state.friends ? 'Friends ': ''}{card.studybuddies && this.state.studybuddies ? 'Study Buddy': ''}</Text>
+                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>{card.dates && this.isValidGenderForPref(this.state.dates,this.state.menPref,this.state.womenPref,this.state.otherPref, card.gender) ? 'Dates ': ''}{card.friends && this.state.friends ? 'Friends ': ''}{card.studybuddies && this.state.studybuddies ? 'Study Buddy': ''}</Text>
                 
            
 

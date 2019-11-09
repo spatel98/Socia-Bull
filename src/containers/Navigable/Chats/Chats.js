@@ -23,7 +23,7 @@ ListItem, Icon, Badge, Button
 import Modal from 'react-native-modal';
 import firebase from 'react-native-firebase'
 import firebaseSDK from '../../../config/firebaseSDK';
-import { thisTypeAnnotation } from '@babel/types';
+import { thisTypeAnnotation, throwStatement } from '@babel/types';
 
   const styles = StyleSheet.create({
     container: {
@@ -96,7 +96,7 @@ export default class Chats extends React.Component {
  
     this.onRefresh()
 
-    this.createNewLists()
+  //  this.createNewLists()
 
   }
   
@@ -135,7 +135,9 @@ createNewLists = () => {
     {
       if(!(this.state.ids.includes(val))){
       
-     temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
+     temp = doc.data()
+     temp.id = doc.id
+     
      this.state.users.push(temp)
      this.state.ids.push(val)
      }
@@ -158,7 +160,9 @@ createNewLists = () => {
      {
        if(!(this.state.rids.includes(val))){
        
-      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
+      temp = doc.data()
+      temp.id = doc.id;
+     //  {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
       this.state.requestsUsers.push(temp)
       this.state.rids.push(val)
       }
@@ -266,6 +270,7 @@ createNewLists = () => {
   updateSearch = search => {
     this.setState({ search: search });
   };
+
    addFriend = (props) => {
     if(this.getLength(this.state.requestsUsers) > 0)
     return (
@@ -325,14 +330,14 @@ createNewLists = () => {
 
   renderItem = ({ item }) => (
     <ListItem
-      title={item.name}
+      title={item.firstName}
       subtitle={item.email}
-      onPress={() =>{(this.state.otherName=item.name)&&(this.state.otherID=item.id)&&(this.state.otherEmail=item.email)&&(this.pressButton())}}//this.pressButton(item, this.props)}
+      onPress={() =>{(this.state.otherName=item.firstname)&&(this.state.otherID=item.id)&&(this.state.otherEmail=item.email)&&(this.pressButton())}}//this.pressButton(item, this.props)}
       leftElement={
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.photo}}
+        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.profPic}}
         />
       }
 
@@ -375,8 +380,7 @@ createNewLists = () => {
     return(
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
-        {/* <Text style={styles.titlestyle}>
-        Chats</Text> */}
+       
           <FlatList
           title = "Chats"
           keyExtractor = {this.keyExtractor}
