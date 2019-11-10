@@ -20,7 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import _ from 'lodash'
 import {
-ListItem, Badge, Button, ButtonGroup
+ListItem, Badge, Button, ButtonGroup, Overlay
 } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import firebase from 'react-native-firebase'
@@ -102,16 +102,10 @@ export default class Chats extends React.Component {
   }
 
   componentDidMount() {
- 
     this.onRefresh()
-    this.onRefresh()
-
-  //  this.createNewLists()
-
   }
   
   keyExtractor = (item, index) => index.toString()
-
 
 // fetches matches and requests arrays
 
@@ -137,6 +131,7 @@ createNewLists = () => {
 
   if(this.getLength(this.state.matches) > 0)
   {
+    tempC = 0
 
   this.state.matches.forEach( val => {
     firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
@@ -152,16 +147,25 @@ createNewLists = () => {
      this.state.ids.push(val)
      }
    }
-         
+        console.log('insnap')
+        tempC += 1
+
+        if(tempC == this.state.matches.length)
+        {
+          this.setState({isFetching: false, selectedIndex: 0})
+        }
    })
 
-   this.setState({isFetching: false})
+   console.log('outsnap')
    });
 
   }
 
+  console.log('outpfloopp')
+
   if(this.getLength(this.state.requests) > 0)
   {
+  
    this.state.requests.forEach( val => {
 
 
@@ -180,7 +184,6 @@ createNewLists = () => {
     }
    
     })
-    this.setState({isFetching: false})
     });
 }
 
@@ -438,6 +441,7 @@ createNewLists = () => {
         selectedIndex = {selectedIndex}
         buttons={buttons}
         containerStyle={{height: 25}}
+        selectedButtonStyle = {{backgroundColor : '#59cbbd'}}
         />
 
 

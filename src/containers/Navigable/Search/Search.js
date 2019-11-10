@@ -18,14 +18,37 @@ import _ from 'lodash'
 
 import Swiper from 'react-native-deck-swiper'
 import { element } from 'prop-types';
+import { Overlay } from 'react-native-elements';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignContent: "center",
     alignItems: 'center',
-    padding: 5,
     borderColor: '#ffffff00'
+  },
+  roundSquare: {
+    width: 240,
+    height: 160,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 4,
+    borderColor: 'gray',
+    borderWidth: 2
+  },
+
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  deadCenter:{
+    backgroundColor: 'blue',
+    position: 'absolute', 
+    top: 0, left: 0, 
+    right: 0, bottom: 0, 
+    justifyContent: 'center', 
+    alignItems: 'center'
   },
   card: {
 
@@ -306,7 +329,6 @@ export default class Search extends React.Component {
 
   isValidGenderForPref = (datePref, menPref, womenPref, otherPref, gender) =>
   {
-
     if(datePref == null || !datePref)
     {
         return false
@@ -419,6 +441,7 @@ export default class Search extends React.Component {
    {
    return(
    <View style={styles.container}>
+     <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}></ImageBackground>
      <ActivityIndicator size="large" animating={this.state.loading}/>
    </View>)
 
@@ -427,9 +450,14 @@ export default class Search extends React.Component {
    if((this.state.doneSetup != null && !this.state.doneSetup) || this.state.cards.length <= 0 || this.state.noCards){
    return(
     <View style={styles.container}>
-    <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}></ImageBackground>
-    <Text>{this.state.doneSetup == true ? 'Please come back later for more matches' : "You haven't set any search settings. Go to the profile page to configure your search settings"}</Text>
-    <Text>{this.state.cards.length}</Text>
+    <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
+    <View style={styles.centerContainer}>
+      <View style={styles.roundSquare}>
+      <Text>{this.state.doneSetup == true ? 'Please come back later for more matches' : "You haven't set any search settings. Go to the profile page to configure your search settings"}</Text>
+    </View>
+    </View>
+    </ImageBackground>
+    
   </View>)
   }
  
