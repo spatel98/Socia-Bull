@@ -47,6 +47,37 @@ export default class DeleteAccount extends Component {
         console.log(e);
     }
 }
+  setNoSearch = () =>{
+    firebase.firestore().collection('users').where("matches", "array-contains", firebaseSDK.shared.uid)
+    .get().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+          // doc.data() is never undefined for query doc snapshots
+        //    if(doc.exists)
+            
+              firebase.firestore().collection('users').doc(doc.id).set({
+                matches: firebase.firestore.FieldValue.arrayRemove(firebaseSDK.shared.uid)
+              }, { merge: true })
+
+
+      });
+    })
+
+    firebase.firestore().collection('users').where("requests", "array-contains", firebaseSDK.shared.uid)
+    .get().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+          // doc.data() is never undefined for query doc snapshots
+        //    if(doc.exists)
+            
+              firebase.firestore().collection('users').doc(doc.id).set({
+                requests: firebase.firestore.FieldValue.arrayRemove(firebaseSDK.shared.uid)
+              }, { merge: true })
+
+
+      });
+    })
+  }
+
+
   deleteAccount(){
     firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
       dates: false,

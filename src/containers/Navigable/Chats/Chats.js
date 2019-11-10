@@ -175,6 +175,9 @@ createNewLists = () => {
    console.log('outsnap')
    });
 
+  }else
+  {
+    this.setState({isFetching: false})
   }
 
   console.log('outpfloopp')
@@ -402,7 +405,7 @@ createNewLists = () => {
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.profPic}}
+        source={item.profPic == null ? require('../../../assets/images/click_to_add.png') : {uri: item.profPic}}
         />
       }
 
