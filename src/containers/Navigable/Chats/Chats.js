@@ -90,6 +90,12 @@ export default class Chats extends React.Component {
     otherID: '',
     messages: [],
     selectedIndex: 0,
+    dates: false,
+    studybuddies : false,
+    friends: false,
+    menPref: false,
+    womenPref: false,
+    otherPref: false
 
     };
 
@@ -113,8 +119,18 @@ export default class Chats extends React.Component {
   firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).onSnapshot((doc) =>{
        if(doc.exists)
        {
+        const data = doc.data()
         this.setState({matches: _.toArray(doc.data().matches)})
         this.setState({requests: _.toArray(doc.data().requests)})
+        this.setState(
+        { 
+          studybuddies: doc.data().studybuddies == null ? false : doc.data().studybuddies,
+          dates: doc.data().dates == null ? false : doc.data().dates,
+          friends: doc.data().friends == null ? false : doc.data().friends,
+          menPref: data.menPref == null ? false : data.menPref,
+          womenPref: data.womenPref == null ? false : data.womenPref,
+          otherPref: data.otherPref == null ? false : data.otherPref
+        })
       
        }
        this.createNewLists()
@@ -344,6 +360,39 @@ createNewLists = () => {
     return Object.keys(arr).length;
   }
 
+  isValidGenderForPref = (datePref, menPref, womenPref, otherPref, gender) =>{
+    if(datePref == null || !datePref)
+    {
+        return false
+    }
+
+    if(menPref != null)
+    {
+      if(menPref && gender == 'male')
+      {
+        return true
+      }    
+    }
+
+    if(womenPref != null)
+    {
+      if(womenPref && gender == 'female')
+      {
+        return true
+      }
+    }
+
+    if(otherPref != null)
+    {
+      if(otherPref && gender == 'other')
+      {
+        return true
+      }
+    }
+
+    return false
+  }
+
   renderItem = ({ item }) => (
     <ListItem
       title={item.firstName}
@@ -359,9 +408,9 @@ createNewLists = () => {
 
       rightElement={
         <View style = {{width: 72, height: 35, flexDirection: 'row', padding: 2}}>
-        {(item.friends == null ? false : item.friends) && <Icon name='emoticon' color={'#36485f'} size={24} type ='material'/>}
-        {(item.dates == null ? false : item.dates) &&<Icon name='heart' color={'#36485f'} size={24} type ='material'/>}
-        {(item.studybuddies == null ? false : item.studybuddies) &&<Icon name='book' color={'#36485f'} size={24} type ='material-community'/>}
+        {(item.friends == null ? false : item.friends) && (this.state.friends) && <Icon name='emoticon' color={'#36485f'} size={24} type ='material'/>}
+        {(item.dates == null ? false : item.dates) && this.isValidGenderForPref(this.state.dates,this.state.menPref,this.state.womenPref,this.state.otherPref, item.gender) &&<Icon name='heart' color={'#36485f'} size={24} type ='material'/>}
+        {(item.studybuddies == null ? false : item.studybuddies)&& this.state.studybuddies && <Icon name='book' color={'#36485f'} size={24} type ='material-community'/>}
         </View>
         
       }
@@ -400,26 +449,30 @@ createNewLists = () => {
     if(this.state.selectedIndex == 0)
     {
       return this.state.users
+      /*
+      return this.state.users.filter((value, index, arr) => {
+        return (value.friends == true && this.state.friends) || (value.dates == true && this.state.dates) || (value.studybuddies == true && this.state.studybuddies)
+      })*/
     }
 
     if(this.state.selectedIndex == 1)
     {
       return this.state.users.filter((value, index, arr) => {
-        return value.friends == true
+        return value.friends == true && this.state.friends
       })
     }
 
     if(this.state.selectedIndex == 2)
     {
       return this.state.users.filter((value, index, arr) => {
-        return value.dates == true
+        return value.dates == true && this.isValidGenderForPref(this.state.dates,this.state.menPref,this.state.womenPref,this.state.otherPref, value.gender)
       })
     }
 
     if(this.state.selectedIndex == 3)
     {
       return this.state.users.filter((value, index, arr) => {
-        return value.studybuddies == true
+        return value.studybuddies == true && this.state.friends
       })
     }
 
