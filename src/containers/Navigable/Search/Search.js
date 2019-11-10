@@ -135,8 +135,8 @@ export default class Search extends React.Component {
       //  console.log('current uid:  after state set', firebaseSDK.shared.uid)
         console.log('study', this.state.studybuddies)
        //Have to call this here to ensure that state has been set from firebase
-        this.getMatches()
-        this.setState({loading: false})
+        
+        this.setState({loading: true}, () => this.getMatches())
         }
         console.log('current uid: ', firebaseSDK.shared.uid)
       })
@@ -182,6 +182,7 @@ export default class Search extends React.Component {
             this.state.cards.push(temp)
             this.state.addedIds.push(temp.id)
             this.setState({cards: this.state.cards})
+            this.setState({loading: false})
             }
           }
         });
@@ -215,6 +216,7 @@ export default class Search extends React.Component {
               this.state.cards.push(temp)
               this.state.addedIds.push(temp.id)
               this.setState({cards: this.state.cards})
+              this.setState({loading: false})
               }
             }
           }
@@ -246,6 +248,7 @@ export default class Search extends React.Component {
               this.state.cards.push(temp)
               this.state.addedIds.push(temp.id)
               this.setState({cards: this.state.cards})
+              this.setState({loading: false})
               }
             }
           }
@@ -277,6 +280,7 @@ export default class Search extends React.Component {
               this.state.cards.push(temp)
               this.state.addedIds.push(temp.id)
               this.setState({cards: this.state.cards})
+              this.setState({loading: false})
               }
             }
           }
@@ -306,6 +310,7 @@ export default class Search extends React.Component {
             this.state.cards.push(temp)
             this.state.addedIds.push(temp.id)
             this.setState({cards: this.state.cards})
+            this.setState({loading: false})
             }
           }
         });
@@ -323,7 +328,7 @@ export default class Search extends React.Component {
     this.setState({doneSetup: true})
   }
 
-  this.setState({loading: false})
+  
     
   }
 
