@@ -46,13 +46,13 @@ export default class ChatForm extends React.Component {
       .onSnapshot(function (doc) {
           this.state.firstName= doc.data().firstName;
           this.state.email= doc.data().email;
-          this.state.avatar= doc.data().profPic;
+          this.state.avatar= doc.data().profPic == null ? require('../../../assets/images/click_to_add.png') : doc.data().profPic;
       }.bind(this))
 
     firebase
       .firestore().collection("users").doc(this.state.friendId)
       .onSnapshot(function (doc) {
-          this.state.friendAvatar= doc.data().profPic;
+          this.state.friendAvatar= doc.data().profPic == null ? require('../../../assets/images/click_to_add.png') : doc.data().profPic;
       }.bind(this))
 
     return {

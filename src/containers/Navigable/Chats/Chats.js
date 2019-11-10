@@ -16,14 +16,16 @@ import {
   FlatList
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import _ from 'lodash'
 import {
-ListItem, Icon, Badge, Button
+ListItem, Badge, Button, ButtonGroup, Overlay
 } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import firebase from 'react-native-firebase'
 import firebaseSDK from '../../../config/firebaseSDK';
-import { thisTypeAnnotation } from '@babel/types';
+import { thisTypeAnnotation, throwStatement } from '@babel/types';
 
   const styles = StyleSheet.create({
     container: {
@@ -87,21 +89,29 @@ export default class Chats extends React.Component {
     otherEmail: '',
     otherID: '',
     messages: [],
+    selectedIndex: 0,
+    dates: false,
+    studybuddies : false,
+    friends: false,
+    menPref: false,
+    womenPref: false,
+    otherPref: false
+
     };
 
+    this.updateIndex = this.updateIndex.bind(this)
    // console.log(this.state.firstName)
   };
 
+  updateIndex (selectedIndex) {
+    this.setState({selectedIndex})
+  }
+
   componentDidMount() {
- 
     this.onRefresh()
-
-    this.createNewLists()
-
   }
   
   keyExtractor = (item, index) => index.toString()
-
 
 // fetches matches and requests arrays
 
@@ -109,16 +119,26 @@ export default class Chats extends React.Component {
   firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).onSnapshot((doc) =>{
        if(doc.exists)
        {
+        const data = doc.data()
         this.setState({matches: _.toArray(doc.data().matches)})
         this.setState({requests: _.toArray(doc.data().requests)})
+        this.setState(
+        { 
+          studybuddies: doc.data().studybuddies == null ? false : doc.data().studybuddies,
+          dates: doc.data().dates == null ? false : doc.data().dates,
+          friends: doc.data().friends == null ? false : doc.data().friends,
+          menPref: data.menPref == null ? false : data.menPref,
+          womenPref: data.womenPref == null ? false : data.womenPref,
+          otherPref: data.otherPref == null ? false : data.otherPref
+        })
       
        }
+       this.createNewLists()
+      })
+
+     
+
       
-      }).bind(this)
-
-     this.createNewLists()
-
-      this.setState({isFetching: false})   
   };
 
 
@@ -127,6 +147,7 @@ createNewLists = () => {
 
   if(this.getLength(this.state.matches) > 0)
   {
+    tempC = 0
 
   this.state.matches.forEach( val => {
     firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
@@ -135,41 +156,58 @@ createNewLists = () => {
     {
       if(!(this.state.ids.includes(val))){
       
-     temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
+     temp = doc.data()
+     temp.id = doc.id
+     
      this.state.users.push(temp)
      this.state.ids.push(val)
      }
    }
-         
+        console.log('insnap')
+        tempC += 1
+
+        if(tempC == this.state.matches.length)
+        {
+          this.setState({isFetching: false, selectedIndex: 0})
+        }
    })
+
+   console.log('outsnap')
    });
 
   }
 
+  console.log('outpfloopp')
+
   if(this.getLength(this.state.requests) > 0)
   {
+  
    this.state.requests.forEach( val => {
+
+
+    
      firebase.firestore().collection('users').doc(val).onSnapshot((doc)=>{
 
      if(doc.exists)
      {
        if(!(this.state.rids.includes(val))){
        
-      temp = {name: doc.data().firstName + ' ' + doc.data().lastName, email: val, id: val, photo: doc.data().profPic}
+      temp = doc.data()
+      temp.id = doc.id;
       this.state.requestsUsers.push(temp)
       this.state.rids.push(val)
       }
     }
-          
+   
     })
     });
 }
+
+  
 }
 
   onRefresh = () => {
     this.setState({isFetching: true}, () => this.fetch())
-
-    this.createNewLists()
   }
 
   sendRequest = () => {
@@ -263,6 +301,7 @@ createNewLists = () => {
   updateSearch = search => {
     this.setState({ search: search });
   };
+
    addFriend = (props) => {
     if(this.getLength(this.state.requestsUsers) > 0)
     return (
@@ -309,6 +348,7 @@ createNewLists = () => {
 
 
   pressButton = () =>{
+    console.log("Name: ", this.state.otherName,' lol', this.state.otherID)
     this.props.navigation.navigate('ChatForm', {
          name: this.state.otherName,
          id: this.state.otherID,
@@ -320,21 +360,59 @@ createNewLists = () => {
     return Object.keys(arr).length;
   }
 
+  isValidGenderForPref = (datePref, menPref, womenPref, otherPref, gender) =>{
+    if(datePref == null || !datePref)
+    {
+        return false
+    }
+
+    if(menPref != null)
+    {
+      if(menPref && gender == 'male')
+      {
+        return true
+      }    
+    }
+
+    if(womenPref != null)
+    {
+      if(womenPref && gender == 'female')
+      {
+        return true
+      }
+    }
+
+    if(otherPref != null)
+    {
+      if(otherPref && gender == 'other')
+      {
+        return true
+      }
+    }
+
+    return false
+  }
+
   renderItem = ({ item }) => (
     <ListItem
-      title={item.name}
+      title={item.firstName}
       subtitle={item.email}
-      onPress={() =>{(this.state.otherName=item.name)&&(this.state.otherID=item.id)&&(this.state.otherEmail=item.email)&&(this.pressButton())}}//this.pressButton(item, this.props)}
+      onPress={() =>{(this.state.otherName=item.firstName)&&(this.state.otherID=item.id)&&(this.state.otherEmail=item.email)&&(this.pressButton())}}
       leftElement={
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={{uri: item.photo}}
+        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.profPic}}
         />
       }
 
       rightElement={
-        <Icon name='book' color={'#36485f'} size={24} type ='material-community'/>
+        <View style = {{width: 72, height: 35, flexDirection: 'row', padding: 2}}>
+        {(item.friends == null ? false : item.friends) && (this.state.friends) && <Icon name='emoticon' color={'#36485f'} size={24} type ='material'/>}
+        {(item.dates == null ? false : item.dates) && this.isValidGenderForPref(this.state.dates,this.state.menPref,this.state.womenPref,this.state.otherPref, item.gender) &&<Icon name='heart' color={'#36485f'} size={24} type ='material'/>}
+        {(item.studybuddies == null ? false : item.studybuddies)&& this.state.studybuddies && <Icon name='book' color={'#36485f'} size={24} type ='material-community'/>}
+        </View>
+        
       }
   
       bottomDivider
@@ -345,13 +423,13 @@ createNewLists = () => {
 
   renderRequests = ({ item }) => (
     <ListItem
-      title={item.name}
-     // subtitle={item.email}
+      title={item.firstName}
+      subtitle={item.email}
       leftElement={
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={{uri: item.photo}}
+        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.profPic}}
         />
       }
       
@@ -366,34 +444,69 @@ createNewLists = () => {
     />
   )
 
+  filterData(){
+
+    if(this.state.selectedIndex == 0)
+    {
+      return this.state.users
+      /*
+      return this.state.users.filter((value, index, arr) => {
+        return (value.friends == true && this.state.friends) || (value.dates == true && this.state.dates) || (value.studybuddies == true && this.state.studybuddies)
+      })*/
+    }
+
+    if(this.state.selectedIndex == 1)
+    {
+      return this.state.users.filter((value, index, arr) => {
+        return value.friends == true && this.state.friends
+      })
+    }
+
+    if(this.state.selectedIndex == 2)
+    {
+      return this.state.users.filter((value, index, arr) => {
+        return value.dates == true && this.isValidGenderForPref(this.state.dates,this.state.menPref,this.state.womenPref,this.state.otherPref, value.gender)
+      })
+    }
+
+    if(this.state.selectedIndex == 3)
+    {
+      return this.state.users.filter((value, index, arr) => {
+        return value.studybuddies == true && this.state.friends
+      })
+    }
+
+
+  }
 
   render(){
 
-    if(this.getLength(this.state.users) != this.getLength(this.state.matches) || this.getLength(this.state.requestsUsers) != this.getLength(this.state.requests))
-    {
-      this.createNewLists()
-    }
-    if(!this.state.loaded){
-      setTimeout(() => { this.onRefresh() }, 100);
-      setTimeout(() => { this.onRefresh() }, 250);
-      setTimeout(() => { this.onRefresh() }, 500);
-      setTimeout(() => { this.onRefresh() }, 2000);
-      this.state.loaded=true;
-    }
+    const buttons = ['All', 'Friends', 'Dates', 'Study']
+
+    const {selectedIndex} = this.state
+
     return(
       <View style={styles.container}>
         <ImageBackground source={require('../../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
-        {/* <Text style={styles.titlestyle}>
-        Chats</Text> */}
+       
+        <ButtonGroup
+        onPress={this.updateIndex}
+        selectedIndex = {selectedIndex}
+        buttons={buttons}
+        containerStyle={{height: 25}}
+        selectedButtonStyle = {{backgroundColor : '#59cbbd'}}
+        />
+
+
           <FlatList
           title = "Chats"
           keyExtractor = {this.keyExtractor}
-          data={this.state.users}
+          data={this.filterData()}
           refreshing = {this.state.isFetching}
           renderItem={this.renderItem}
           onRefresh={()=>this.onRefresh()}
           ListHeaderComponent={this.addFriend}
-          extraData={this.state}
+          extraData={this.state.selectedIndex}
           />
         <Modal
           isVisible={this.state.addFriendVisible}

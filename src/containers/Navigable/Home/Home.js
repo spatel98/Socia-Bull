@@ -58,11 +58,11 @@ export default class Home extends Component {
     pic: logo,
   }
   componentDidMount() {
-    console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
+    //console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
     firebase
       .firestore().collection("users").doc(firebaseSDK.shared.uid)
       .onSnapshot((doc) => {
-        console.log('doc data:', doc.data())
+        //console.log('doc data:', doc.data())
         const data = doc.data()
         if(data!=undefined){
           this.setState({
@@ -168,15 +168,15 @@ export default class Home extends Component {
       }, () => {
         // Upload completed successfully, now we can get the download URL
         uploadTask.ref.getDownloadURL().then((downloadURL) => {
-          console.log('File available at', downloadURL);
+         // console.log('File available at', downloadURL);
 
           firebase.firestore().collection("users").doc(firebaseSDK.shared.uid).set({
             profPic: downloadURL,
           }, { merge: true })
             .then(function () {
-              console.log('current uid: ', firebaseSDK.shared.uid);
+              //console.log('current uid: ', firebaseSDK.shared.uid);
               console.log("Document successfully written!");
-              console.log('current uid: ', firebaseSDK.shared.uid);
+              //console.log('current uid: ', firebaseSDK.shared.uid);
             })
             .catch(function (error) {
               console.error("Error writing document: ", error);
@@ -211,11 +211,11 @@ export default class Home extends Component {
   render() {
     const { photo } = this.state
     if(this.state.firstName==''){
-      console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
+      //console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
       firebase
         .firestore().collection("users").doc(firebaseSDK.shared.uid)
         .onSnapshot((doc) => {
-          console.log('doc data:', doc.data())
+          //console.log('doc data:', doc.data())
           const data = doc.data()
           if(data!=undefined){
             this.setState({

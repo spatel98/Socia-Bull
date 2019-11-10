@@ -49,11 +49,11 @@ export default class Settings extends React.Component {
         loaded: false,
     }
     componentDidMount() {
-        console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
-        firebase
+        //console.log('componentDidMount current uid: ', firebaseSDK.shared.uid)
+        this.unsubscribe = firebase
           .firestore().collection("users").doc(firebaseSDK.shared.uid)
           .onSnapshot((doc) => {
-            console.log('doc data:', doc.data())
+            //console.log('doc data:', doc.data())
             const data = doc.data()
             if(data!=undefined){
               this.setState({
@@ -69,6 +69,11 @@ export default class Settings extends React.Component {
             }
           })
       }
+
+    componentWillUnmount(){
+      console.log("component will unmount called")
+      this.unsubscribe();
+    }
       _navigateToScreen = () => {
         const { navigation } = this.props.navigation.navigate('DeleteAccount');
       }
