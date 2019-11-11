@@ -70,6 +70,14 @@ export default class Form extends React.Component {
         this.setState({ showLoading: false, errorMessage: "All fields empty"})
         return 0
       }
+      if(email==''){
+        this.setState({ showLoading: false, errorMessage: "Please enter email"})
+        return 0
+      }
+      if(password==''){
+        this.setState({ showLoading: false, errorMessage: "Please enter password"})
+        return 0
+      }
       firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
