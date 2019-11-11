@@ -527,7 +527,7 @@ createNewLists = () => {
               <View style={styles.modalStyle}>
               <Text style= {styles.textstyle}>{this.state.friendText}</Text>
 
-              <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'row', padding: 5}}>
               <TextInput 
               style={{borderColor: '#36485f', borderWidth: 1, maxWidth: 1000}}
               placeholder="Username"
@@ -537,7 +537,11 @@ createNewLists = () => {
               onSubmitEditing={()=>this.setState({requesting: true},() => this.sendRequest())}
               />
                 <Button onPress={()=>this.setState({requesting: true},()=>this.sendRequest())}
-                 loading={this.state.requesting}> style={{width: 40, height: 40}}</Button>
+                 loading={this.state.requesting}
+                 title={"Submit"} 
+                 buttonStyle={{width: 90, height: 60, paddingLeft: 10}}>
+
+                 </Button>
            </View>
               <FlatList
           title = "Requests"
@@ -550,8 +554,12 @@ createNewLists = () => {
           //onRefresh={this.onRefresh}
           //ListHeaderComponent={this.addFriend}
           ListEmptyComponent={
-          <Text>No Pending Friend Requests
-          </Text>}
+          <View style={styles.modalStyle}>
+          <Text>
+            No Pending Friend Requests
+          </Text>
+          </View>
+          }
           />
               </View>
         </Modal>
