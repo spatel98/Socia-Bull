@@ -539,8 +539,8 @@ createNewLists = () => {
                 <Button onPress={()=>this.setState({requesting: true},()=>this.sendRequest())}
                  loading={this.state.requesting}
                  title={"Submit"} 
-                 buttonStyle={{width: 90, height: 60, paddingLeft: 10}}>
-
+                 buttonStyle={{width: 90, height: 60, paddingLeft: 10}}
+                 containerStyle={{padding: 10}}>
                  </Button>
            </View>
               <FlatList
