@@ -6,7 +6,18 @@ import { Button } from 'react-native-elements';
 
 export default class SignUpForm extends React.Component {
 	state = { email: '', showLoading: false, errorMessage: null }
-	
+  
+  static navigationOptions = ({ navigation }) => ({
+    headerTintColor: '#fff',
+    headerStyle: {
+      backgroundColor: '#005e48'
+      //backgroundColor: '#59cbbd'
+    },
+    // headerTitleStyle: {
+    //   color: '#fff'
+    // }
+  });
+
 	handleForgotPassword = () => {
 
     this.setState({showLoading: true})
