@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, View, ImageBackground } from 'react-native'
 import firebase from 'react-native-firebase'
 
 import { Button } from 'react-native-elements';
@@ -22,7 +22,12 @@ export default class SignUpForm extends React.Component {
 	
   render() {
     return (
+
+      <View>
+        <ImageBackground source={require('../../assets/images/background-5.png')} style={{width: '100%',height:'100%' }}>
+ 
       <View style={styles.container}>
+        
         <Text style={styles.header}>Forgot Password</Text>
         {this.state.errorMessage &&
           <Text style={{ color: 'red' }}>
@@ -45,6 +50,9 @@ export default class SignUpForm extends React.Component {
           onPress={this.handleForgotPassword}
         >
         </Button>
+       
+      </View>
+      </ImageBackground>
       </View>
     )
   }
@@ -55,7 +63,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#36485f',
+    backgroundColor: '#ffffff00',
     paddingLeft: 60,
     paddingRight: 60,
   },

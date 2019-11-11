@@ -160,14 +160,12 @@ export default class Search extends React.Component {
 
   getMatches = () =>
   {
+    this.setState({cards: [], addedIds: []})
 
     this.unsubscribe1 = firebase.firestore().collection('users').where("college", "==", this.state.college)
       .onSnapshot(querySnapshot => {
 
-        if(!this.state.studybuddies)
-        {
-          return
-        }
+       
       
         querySnapshot.forEach(doc => {
 
@@ -326,6 +324,9 @@ export default class Search extends React.Component {
   else
   {
     this.setState({doneSetup: true})
+
+    this.setState({loading: false})
+
   }
 
   }
@@ -502,7 +503,7 @@ export default class Search extends React.Component {
                 <Text style={{ fontSize: 22, padding: 5, color: 'black' }}>{card.major}</Text>
                
                 <Text style={{ fontSize: 21, padding: 5, color: 'black' }}>Seeking</Text>
-                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>{card.dates && this.isValidGenderForPref(this.state.dates,this.state.menPref,this.state.womenPref,this.state.otherPref, card.gender) ? 'Dates ': ''}{card.friends && this.state.friends ? 'Friends ': ''}{card.studybuddies && this.state.studybuddies ? 'Study Buddy': ''}</Text>
+                <Text style={{ fontSize: 20, padding: 5, color: 'black' }}>{card.dates && this.isValidGenderForPref(this.state.dates,this.state.menPref,this.state.womenPref,this.state.otherPref, card.gender) ? 'Dates ': ''}{card.friends && this.state.friends ? 'Friends ': ''}{card.studybuddies && this.state.studybuddies  && card.college == this.state.college? 'Study Buddy': ''}</Text>
                 
            
 

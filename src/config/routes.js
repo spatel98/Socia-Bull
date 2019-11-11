@@ -96,7 +96,7 @@ const AppNavigator = createStackNavigator(
     ForgotPassword: {
       screen: ForgotPassword,
       navigationOptions: {
-        header: null,
+   //     header: null,
       },
     },
     Loading: {
