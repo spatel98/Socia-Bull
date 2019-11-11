@@ -88,6 +88,7 @@ export default class Chats extends React.Component {
     otherName: '',
     otherEmail: '',
     otherID: '',
+    college: '',
     messages: [],
     selectedIndex: 0,
     dates: false,
@@ -125,6 +126,7 @@ export default class Chats extends React.Component {
         this.setState(
         { 
           studybuddies: doc.data().studybuddies == null ? false : doc.data().studybuddies,
+          college: data.college,
           dates: doc.data().dates == null ? false : doc.data().dates,
           friends: doc.data().friends == null ? false : doc.data().friends,
           menPref: data.menPref == null ? false : data.menPref,
@@ -143,6 +145,8 @@ export default class Chats extends React.Component {
 
 
 createNewLists = () => {
+
+  this.setState({users: [], ids: []})
 
 
   if(this.getLength(this.state.matches) > 0)
@@ -351,7 +355,7 @@ createNewLists = () => {
 
 
   pressButton = () =>{
-    console.log("Name: ", this.state.otherName,' lol', this.state.otherID)
+    //console.log("Name: ", this.state.otherName,' lol', this.state.otherID)
     this.props.navigation.navigate('ChatForm', {
          name: this.state.otherName,
          id: this.state.otherID,
@@ -413,7 +417,7 @@ createNewLists = () => {
         <View style = {{width: 72, height: 35, flexDirection: 'row', padding: 2}}>
         {(item.friends == null ? false : item.friends) && (this.state.friends) && <Icon name='emoticon' color={'#36485f'} size={24} type ='material'/>}
         {(item.dates == null ? false : item.dates) && this.isValidGenderForPref(this.state.dates,this.state.menPref,this.state.womenPref,this.state.otherPref, item.gender) &&<Icon name='heart' color={'#36485f'} size={24} type ='material'/>}
-        {(item.studybuddies == null ? false : item.studybuddies)&& this.state.studybuddies && <Icon name='book' color={'#36485f'} size={24} type ='material-community'/>}
+        {(item.studybuddies == null ? false : item.studybuddies)&& this.state.studybuddies  && (this.state.college == item.college) && <Icon name='book' color={'#36485f'} size={24} type ='material-community'/>}
         </View>
         
       }
@@ -432,7 +436,7 @@ createNewLists = () => {
         <Image
         style={styles.imagestyle}
         resizeMode="cover"
-        source={item.photo == null ? require('../../../assets/images/click_to_add.png') : {uri: item.profPic}}
+        source={item.profPic == null ? require('../../../assets/images/click_to_add.png') : {uri: item.profPic}}
         />
       }
       
@@ -475,7 +479,7 @@ createNewLists = () => {
     if(this.state.selectedIndex == 3)
     {
       return this.state.users.filter((value, index, arr) => {
-        return value.studybuddies == true && this.state.friends
+        return value.studybuddies == true && this.state.studybuddies && this.state.college == value.college
       })
     }
 

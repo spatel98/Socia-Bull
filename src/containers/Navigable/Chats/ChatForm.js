@@ -6,6 +6,9 @@ import {
 import { GiftedChat } from 'react-native-gifted-chat'; // 0.3.0
 
 import { Bubble } from 'react-native-gifted-chat'
+import {
+  Button
+  } from 'react-native-elements';
 
 import firebaseSDK from '../../../config/firebaseSDK';
 import firebase from 'react-native-firebase';
@@ -26,7 +29,34 @@ export default class ChatForm extends React.Component {
     }
   }
 
+  _removeFriend = () => {
+
+    firebase.firestore().collection('users').doc(firebaseSDK.shared.uid).set({
+      ignore: firebase.firestore.FieldValue.arrayUnion(this.state.friendId),
+      matches: firebase.firestore.FieldValue.arrayRemove(this.state.friendId)
+    }, { merge: true })
+
+    firebase.firestore().collection('users').doc(this.state.friendId).set({
+      ignore: firebase.firestore.FieldValue.arrayUnion(firebaseSDK.shared.uid),
+      matches: firebase.firestore.FieldValue.arrayRemove(firebaseSDK.shared.uid)
+    }, { merge: true })
+
+    this.props.navigation.navigate('Chats');
+
+    ///add to ignore navigate to chats delete from matches on both sides
+  }
+
   static navigationOptions = ({ navigation }) => ({
+
+    headerRight: () => (
+      <Button
+        onPress={navigation.getParam('removeFriend')}
+        title="Remove Match"
+        type="clear" 
+        titleStyle={{color: 'white'}}
+      />
+    ),
+
     title: (navigation.state.params || {}).name || 'Chat!',
     headerTintColor: '#fff',
     //headerLeft: null,
@@ -166,7 +196,9 @@ export default class ChatForm extends React.Component {
           //this.state.messages = _.toArray(doc.data().messages)
         }
       
-      });        
+      });
+         
+      this.props.navigation.setParams({removeFriend: this._removeFriend})
     
     // this.setState((previousState) => {
     //   return {
